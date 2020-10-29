@@ -29,13 +29,7 @@
     
     
       
-      
-        
-        
-        
-      
-      <link  rel="stylesheet" href="https://cdn.staticfile.org/prism/1.21.0/themes/prism-tomorrow.min.css" />
-      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/monokai-sublime.min.css" />
     
   
 
@@ -200,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.6k 字
+      2.5k 字
     </span>
   
 
@@ -210,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      38
+      37
        分钟
     </span>
   
@@ -263,81 +257,81 @@
 <li><p>和正常的ubuntu一样，首先修改系统的源，这里使用的是清华的源：<br><a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/</a></p>
 </li>
 <li><p>依次执行下面的命令：</p>
-<pre class="language-none"><code class="language-none">cd &#x2F;etc&#x2F;apt
-# 保存原始的sources.list文件
-cp sources.list sources.list.bak
-apt-get update
-# 安装编辑文本的工具，可以用自己顺手的vim
-apt-get install vim
+<pre><code class="hljs vim"><span class="hljs-keyword">cd</span> /etc/apt
+# 保存原始的sources.<span class="hljs-keyword">list</span>文件
+<span class="hljs-keyword">cp</span> sources.<span class="hljs-keyword">list</span> sources.<span class="hljs-keyword">list</span>.bak
+apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span>
+# 安装编辑文本的工具，可以用自己顺手的<span class="hljs-keyword">vim</span>
+apt-<span class="hljs-built_in">get</span> install <span class="hljs-keyword">vim</span>
 # 更换源之后采用https协议，需要安装该软件才行
-apt-get install apt-transport-https
-# 安装ca-certificates
-apt-get install ca-certificates
+apt-<span class="hljs-built_in">get</span> install apt-transport-https
+# 安装<span class="hljs-keyword">ca</span>-certificates
+apt-<span class="hljs-built_in">get</span> install <span class="hljs-keyword">ca</span>-certificates
 # 覆盖原始的内容
-echo &#39;&#39; &gt; sources.list
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&#x27;</span> &gt; sources.<span class="hljs-keyword">list</span>
 # 将清华的源拷贝进去(Ctrl+Shift+v)保存
-vim sources.list
+<span class="hljs-keyword">vim</span> sources.<span class="hljs-keyword">list</span>
 
-apt-get update</code></pre>
+apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span></code></pre>
 </li>
 </ul>
 </li>
 <li><p>安装tmux</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">sudo apt-get install tmux
-# 设置开启终端自动进入tmux
-cd ~
+<pre><code class="hljs sh">sudo apt-get install tmux
+<span class="hljs-comment"># 设置开启终端自动进入tmux</span>
+<span class="hljs-built_in">cd</span> ~
 vim .zshrc
-# 在最底端添加
+<span class="hljs-comment"># 在最底端添加</span>
 tmux
 
-# 设置滚轮控制
+<span class="hljs-comment"># 设置滚轮控制</span>
 $ touch .tmux.conf
 $ vim .tmux.conf 
-# 添加
-set -g mouse on</code></pre>
+<span class="hljs-comment"># 添加</span>
+<span class="hljs-built_in">set</span> -g mouse on</code></pre>
 
 
 
 </li>
 </ul>
-<pre class="language-sh" data-language="sh"><code class="language-sh"># VIM 编辑器
+<pre><code class="hljs sh"><span class="hljs-comment"># VIM 编辑器</span>
 $ sudo apt-get install vim
-# make
+<span class="hljs-comment"># make</span>
 $ sudo apt-get install make
-# cmake
+<span class="hljs-comment"># cmake</span>
 $ sudo apt-get install cmake
-# git
+<span class="hljs-comment"># git</span>
 $ sudo apt-get install git</code></pre>
 
 <ul>
 <li><p>安装Proxychains</p>
-<pre class="language-none"><code class="language-none">sudo apt install proxychains</code></pre>
+<pre><code class="hljs cmake">sudo apt <span class="hljs-keyword">install</span> proxychains</code></pre>
 
 <p><strong>配置proxychains</strong></p>
-<pre class="language-none"><code class="language-none">sudo vim &#x2F;etc&#x2F;proxychains.conf</code></pre>
+<pre><code class="hljs awk">sudo vim <span class="hljs-regexp">/etc/</span>proxychains.conf</code></pre>
 
 <p><strong>在proxychains.conf文件末尾修改你的socks5服务地址</strong></p>
-<pre class="language-none"><code class="language-none">[ProxyList]
-socks5  127.0.0.1 1080</code></pre>
+<pre><code class="hljs angelscript"><span class="hljs-string">[ProxyList]</span>
+socks5  <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span> <span class="hljs-number">1080</span></code></pre>
 
 <p><strong>使用(此方法只能代理TCP链接)</strong></p>
-<pre class="language-none"><code class="language-none"># 在 命令之前加上 proxychains 即可使用
-proxychains pip install &lt;package_name&gt;
-proxychains apt-get update</code></pre>
+<pre><code class="hljs sql"><span class="hljs-comment"># 在 命令之前加上 proxychains 即可使用</span>
+proxychains pip <span class="hljs-keyword">install</span> &lt;package_name&gt;
+proxychains apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">update</span></code></pre>
 </li>
 <li><p>安装ssh</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh"># 安装ssh服务
+<pre><code class="hljs sh"><span class="hljs-comment"># 安装ssh服务</span>
 $ sudo apt-get install openssh-server
-# 重启ssh服务
+<span class="hljs-comment"># 重启ssh服务</span>
 $ sudo service ssh restart
-# 配置ssh免密登陆
+<span class="hljs-comment"># 配置ssh免密登陆</span>
 1. 打开本地存放ssh秘钥对的文件
 C:\Users\用户名\.ssh
 
 2. 复制 id-rsa.pub 中内容
 
 3. 在ubuntu中新建如下文件
-vim &#x2F;用户目录的绝对路径&#x2F;.ssh&#x2F;authorized_keys
+vim /用户目录的绝对路径/.ssh/authorized_keys
 
 4. 将公钥内容写入authorized_keys中</code></pre>
 
@@ -349,14 +343,14 @@ vim &#x2F;用户目录的绝对路径&#x2F;.ssh&#x2F;authorized_keys
 <li><p><strong>Pwntools</strong></p>
 <p>一个CTF框架和漏洞利用开发库，用Python开发， 必备神器，安装方法如下：</p>
 <p>Python3环境安装</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh"> $ sudo apt-get update
+<pre><code class="hljs sh"> $ sudo apt-get update
 $ sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
 $ sudo pip3 install pwntools</code></pre>
 
 </li>
 </ul>
 <p>Python2 环境安装</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh"> $ sudo apt-get install python python-pip python-dev libssl-dev libffi-dev build-essential
+<pre><code class="hljs sh"> $ sudo apt-get install python python-pip python-dev libssl-dev libffi-dev build-essential
 $ sudo pip install pwntools</code></pre>
 
 <ul>
@@ -367,7 +361,7 @@ $ sudo pip install pwntools</code></pre>
 </ul>
 <ul>
 <li><p>安装x86环境</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">$ sudo apt-get install libc6-dev-i386
+<pre><code class="hljs sh">$ sudo apt-get install libc6-dev-i386
 $ sudo dpkg --add-architecture i386
 $ sudo apt-get update
 $ sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 zlib1g:i386
@@ -377,20 +371,20 @@ $ sudo apt-get install lib32z1</code></pre>
 <ul>
 <li><p>安装pwndbg和pwngdb</p>
 <p>pwndbg安装：</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh"># 安装pwngdb
-     cd ~&#x2F;
-git clone https:&#x2F;&#x2F;github.com&#x2F;scwuaptx&#x2F;Pwngdb.git 
-     cp ~&#x2F;Pwngdb&#x2F;.gdbinit ~&#x2F;
+<pre><code class="hljs sh"><span class="hljs-comment"># 安装pwngdb</span>
+     <span class="hljs-built_in">cd</span> ~/
+git <span class="hljs-built_in">clone</span> https://github.com/scwuaptx/Pwngdb.git 
+     cp ~/Pwngdb/.gdbinit ~/
 
-     # 安装pwndbg
-git clone https:&#x2F;&#x2F;github.com&#x2F;pwndbg&#x2F;pwndbg
-     cd pwndbg
-.&#x2F;setup.sh
+     <span class="hljs-comment"># 安装pwndbg</span>
+git <span class="hljs-built_in">clone</span> https://github.com/pwndbg/pwndbg
+     <span class="hljs-built_in">cd</span> pwndbg
+./setup.sh
      
-     # 联合使用
-     vim ~&#x2F;.gdbinit
+     <span class="hljs-comment"># 联合使用</span>
+     vim ~/.gdbinit
      然后写入
-     source ~&#x2F;pwndbg&#x2F;gdbinit.py</code></pre>
+     <span class="hljs-built_in">source</span> ~/pwndbg/gdbinit.py</code></pre>
 
 </li>
 </ul>
@@ -399,42 +393,42 @@ git clone https:&#x2F;&#x2F;github.com&#x2F;pwndbg&#x2F;pwndbg
 <p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201009131438.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <ul>
 <li><p>libc-database</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">git clone https:&#x2F;&#x2F;github.com&#x2F;niklasb&#x2F;libc-database.git</code></pre>
+<pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> https://github.com/niklasb/libc-database.git</code></pre>
 </li>
 <li><p><strong>LibcSearcher</strong></p>
 <p>根据泄露数据查找libc库版本的库，省时，安装方法如下：</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh"> $ git clone https:&#x2F;&#x2F;github.com&#x2F;lieanu&#x2F;LibcSearcher.git
-$ cd LibcSearcher
+<pre><code class="hljs sh"> $ git <span class="hljs-built_in">clone</span> https://github.com/lieanu/LibcSearcher.git
+$ <span class="hljs-built_in">cd</span> LibcSearcher
 $ python setup.py develop
-$ python3 setup.py develop # 安装python3版</code></pre>
+$ python3 setup.py develop <span class="hljs-comment"># 安装python3版</span></code></pre>
 </li>
 <li><p><strong>ROPgadget和one_gadget</strong></p>
 <p>ROPgadget是用来找gadget的，one_gadget用来寻找libc库中的execve(‘/bin/sh’, NULL, NULL)可以一个gadget就可以getshell，建议安装。</p>
 <p>安装ROPgadget：</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh"> $ sudo pip install capstone
+<pre><code class="hljs sh"> $ sudo pip install capstone
 $ pip install ropgadget
 $ ROPgadget</code></pre>
 
 <p>安装one_gadget</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh"> $ sudo apt install ruby
+<pre><code class="hljs sh"> $ sudo apt install ruby
  $ apt-get install gem
 $ gem install one_gadget</code></pre>
 
 <p>安装one_gadget的python库</p>
 <p><code>pip install one_gadget</code>或<code>pip3 install one_gadget</code></p>
 <p>使用：</p>
-<pre class="language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> one_gadget <span class="token keyword">import</span> generate_one_gadget
+<pre><code class="hljs python"><span class="hljs-keyword">from</span> one_gadget <span class="hljs-keyword">import</span> generate_one_gadget
 
-path_to_libc <span class="token operator">=</span> <span class="token string">'/lib/x86_64-linux-gnu/libc.so.6'</span>
+path_to_libc = <span class="hljs-string">&#x27;/lib/x86_64-linux-gnu/libc.so.6&#x27;</span>
 
-<span class="token keyword">for</span> offset <span class="token keyword">in</span> generate_one_gadget<span class="token punctuation">(</span>path_to_libc<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">print</span><span class="token punctuation">(</span>offset<span class="token punctuation">)</span></code></pre>
+<span class="hljs-keyword">for</span> offset <span class="hljs-keyword">in</span> generate_one_gadget(path_to_libc):
+    print(offset)</code></pre>
 
 </li>
 </ul>
 <ul>
 <li><p>Ropper</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">$ sudo pip install setuptools --upgrade
+<pre><code class="hljs sh">$ sudo pip install setuptools --upgrade
 $ sudo pip install capstone
 $ sudo pip install filebytes
 $ sudo pip install keystone-engine
@@ -460,18 +454,18 @@ $ sudo pip install pyvex</code></pre>
 </ul>
 <h4 id="4-异构"><a href="#4-异构" class="headerlink" title="4. 异构"></a>4. 异构</h4><ul>
 <li><p>QEMU</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">sudo apt-get install qemu 
+<pre><code class="hljs sh">sudo apt-get install qemu 
 sudo apt-get install qemu-user-static
 sudo apt-get install qemu-system
 sudo apt-get install uml-utilities
 sudo apt-get install bridge-utils</code></pre>
 </li>
 <li><p>gdb-mutiarch</p>
-<pre class="language-none"><code class="language-none">$ sudo apt-get install gdb-multiarch</code></pre>
+<pre><code class="hljs routeros">$ sudo apt-<span class="hljs-builtin-name">get</span> install gdb-multiarch</code></pre>
 </li>
 <li><p>binwalk</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">git clone https:&#x2F;&#x2F;github.com&#x2F;ReFirmLabs&#x2F;binwalk.git
-cd binwalk
+<pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> https://github.com/ReFirmLabs/binwalk.git
+<span class="hljs-built_in">cd</span> binwalk
 $ sudo python setup.py install
 
 $ sudo apt-get install python-lzma
@@ -483,30 +477,30 @@ $ sudo apt-get install python-pip
 $ sudo pip install capstone
 $ sudo apt-get install mtd-utils gzip bzip2 tar arj lhasa p7zip p7zip-full cabextract cramfsprogs cramfsswap squashfs-tools sleuthkit default-jdk lzop srecord
 
-# Install sasquatch to extract non-standard SquashFS images
+<span class="hljs-comment"># Install sasquatch to extract non-standard SquashFS images</span>
 $ sudo apt-get install zlib1g-dev liblzma-dev liblzo2-dev
-$ git clone https:&#x2F;&#x2F;github.com&#x2F;devttys0&#x2F;sasquatch
-$ (cd sasquatch &amp;&amp; .&#x2F;build.sh)
+$ git <span class="hljs-built_in">clone</span> https://github.com/devttys0/sasquatch
+$ (<span class="hljs-built_in">cd</span> sasquatch &amp;&amp; ./build.sh)
 
-# Install jefferson to extract JFFS2 file systems
+<span class="hljs-comment"># Install jefferson to extract JFFS2 file systems</span>
 $ sudo pip install cstruct
-$ git clone https:&#x2F;&#x2F;github.com&#x2F;sviehb&#x2F;jefferson
-$ (cd jefferson &amp;&amp; sudo python setup.py install)
+$ git <span class="hljs-built_in">clone</span> https://github.com/sviehb/jefferson
+$ (<span class="hljs-built_in">cd</span> jefferson &amp;&amp; sudo python setup.py install)
 
-# Install ubi_reader to extract UBIFS file systems
+<span class="hljs-comment"># Install ubi_reader to extract UBIFS file systems</span>
 $ sudo apt-get install liblzo2-dev python-lzo
-$ git clone https:&#x2F;&#x2F;github.com&#x2F;jrspruitt&#x2F;ubi_reader
-$ (cd ubi_reader &amp;&amp; sudo python setup.py install)
+$ git <span class="hljs-built_in">clone</span> https://github.com/jrspruitt/ubi_reader
+$ (<span class="hljs-built_in">cd</span> ubi_reader &amp;&amp; sudo python setup.py install)
 
-# Install yaffshiv to extract YAFFS file systems
-$ git clone https:&#x2F;&#x2F;github.com&#x2F;devttys0&#x2F;yaffshiv
-$ (cd yaffshiv &amp;&amp; sudo python setup.py install)
+<span class="hljs-comment"># Install yaffshiv to extract YAFFS file systems</span>
+$ git <span class="hljs-built_in">clone</span> https://github.com/devttys0/yaffshiv
+$ (<span class="hljs-built_in">cd</span> yaffshiv &amp;&amp; sudo python setup.py install)
 
-# Install unstuff (closed source) to extract StuffIt archive files
-$ wget -O - http:&#x2F;&#x2F;downloads.tuxfamily.org&#x2F;sdtraces&#x2F;stuffit520.611linux-i386.tar.gz | tar -zxv
-$ sudo cp bin&#x2F;unstuff &#x2F;usr&#x2F;local&#x2F;bin&#x2F;
+<span class="hljs-comment"># Install unstuff (closed source) to extract StuffIt archive files</span>
+$ wget -O - http://downloads.tuxfamily.org/sdtraces/stuffit520.611linux-i386.tar.gz | tar -zxv
+$ sudo cp bin/unstuff /usr/<span class="hljs-built_in">local</span>/bin/
 
-sudo .&#x2F;deps.sh</code></pre>
+sudo ./deps.sh</code></pre>
 
 
 
@@ -514,9 +508,9 @@ sudo .&#x2F;deps.sh</code></pre>
 </ul>
 <ul>
 <li><p>buildroot</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">sudo apt install gcc build-essential bison flex gettext tcl sharutils libncurses-dev zlib1g-dev exuberant-ctags g++ texinfo patch vim libtool bc git
-# 从该网址中下载buildroot
-https:&#x2F;&#x2F;buildroot.org&#x2F;download.html</code></pre>
+<pre><code class="hljs sh">sudo apt install gcc build-essential bison flex gettext tcl sharutils libncurses-dev zlib1g-dev exuberant-ctags g++ texinfo patch vim libtool bc git
+<span class="hljs-comment"># 从该网址中下载buildroot</span>
+https://buildroot.org/download.html</code></pre>
 
 
 
@@ -558,11 +552,11 @@ https:&#x2F;&#x2F;buildroot.org&#x2F;download.html</code></pre>
 <li><p>翻译汇编：<br><code>sub_esp_jmp = asm(&#39;sub esp, 0x28;jmp esp&#39;)</code></p>
 </li>
 <li><p>一种调试方法：</p>
-<pre class="language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">DEBUG</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">:</span>
-	<span class="token builtin">raw_input</span><span class="token punctuation">(</span><span class="token string">"DEBUG: "</span><span class="token punctuation">)</span>
-	gdb<span class="token punctuation">.</span>attach<span class="token punctuation">(</span>io<span class="token punctuation">,</span> cmd<span class="token punctuation">)</span> 
+<pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">DEBUG</span>(<span class="hljs-params">cmd</span>):</span>
+	raw_input(<span class="hljs-string">&quot;DEBUG: &quot;</span>)
+	gdb.attach(io, cmd) 
 	
-DEBUG<span class="token punctuation">(</span><span class="token string">'b *0x1234 \n c'</span><span class="token punctuation">)</span> <span class="token comment">#在0x123处下断点，然后继续执行至断点处</span></code></pre>
+DEBUG(<span class="hljs-string">&#x27;b *0x1234 \n c&#x27;</span>) <span class="hljs-comment">#在0x123处下断点，然后继续执行至断点处</span></code></pre>
 </li>
 <li><p>byte ptr [eax]</p>
 <p>以eax为地址，取一个字节的数据，并扩展到32位</p>
@@ -615,13 +609,13 @@ DEBUG<span class="token punctuation">(</span><span class="token string">'b *0x12
 <li><p>在vscode中开启 pwntools gdb调试</p>
 <ul>
 <li><p>原来的代码是直接attach调用：</p>
-  <pre class="language-python" data-language="python"><code class="language-python">p <span class="token operator">=</span> process<span class="token punctuation">(</span><span class="token string">'./dice_game'</span><span class="token punctuation">)</span>
-gdb<span class="token punctuation">.</span>attach<span class="token punctuation">(</span>p<span class="token punctuation">)</span></code></pre>
+  <pre><code class="hljs python">p = process(<span class="hljs-string">&#x27;./dice_game&#x27;</span>)
+gdb.attach(p)</code></pre>
 
 <p>  现在修改为：</p>
-  <pre class="language-python" data-language="python"><code class="language-python">p <span class="token operator">=</span> process<span class="token punctuation">(</span><span class="token string">'./dice_game'</span><span class="token punctuation">)</span>
-context<span class="token punctuation">.</span>terminal <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'tmux'</span><span class="token punctuation">,</span><span class="token string">'splitw'</span><span class="token punctuation">,</span><span class="token string">'-h'</span><span class="token punctuation">]</span>
-gdb<span class="token punctuation">.</span>attach<span class="token punctuation">(</span>proc<span class="token punctuation">.</span>pidof<span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span>gdbscript<span class="token operator">=</span><span class="token string">"b main"</span><span class="token punctuation">)</span></code></pre>
+  <pre><code class="hljs python">p = process(<span class="hljs-string">&#x27;./dice_game&#x27;</span>)
+context.terminal = [<span class="hljs-string">&#x27;tmux&#x27;</span>,<span class="hljs-string">&#x27;splitw&#x27;</span>,<span class="hljs-string">&#x27;-h&#x27;</span>]
+gdb.attach(proc.pidof(p)[<span class="hljs-number">0</span>],gdbscript=<span class="hljs-string">&quot;b main&quot;</span>)</code></pre>
 
 <ul>
 <li><p>运行脚本的时候，先配置tmux：</p>
@@ -732,7 +726,7 @@ gdb<span class="token punctuation">.</span>attach<span class="token punctuation"
 </li>
 <li><p>在本地部署pwn题调试</p>
 <p>  安装 socat</p>
-  <pre class="language-sh" data-language="sh"><code class="language-sh">$ sudo apt-get install socat</code></pre>
+  <pre><code class="hljs sh">$ sudo apt-get install socat</code></pre>
 
 <p>  模板：<code>socat tcp-listen:port,fork exec:./程序名,reuseaddr</code></p>
 <p>  实例：<code>socat tcp-listen:10001,fork exec:./pwn1,reuseaddr</code></p>
@@ -956,8 +950,6 @@ gdb<span class="token punctuation">.</span>attach<span class="token punctuation"
 
 
 
-  
-    
   
 
 
