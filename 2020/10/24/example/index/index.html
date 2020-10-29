@@ -257,22 +257,22 @@
 <li><p>和正常的ubuntu一样，首先修改系统的源，这里使用的是清华的源：<br><a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/</a></p>
 </li>
 <li><p>依次执行下面的命令：</p>
-<pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /etc/apt
-<span class="hljs-comment"># 保存原始的sources.list文件</span>
-cp sources.list sources.list.bak
-apt-get update
-<span class="hljs-comment"># 安装编辑文本的工具，可以用自己顺手的vim</span>
-apt-get install vim
-<span class="hljs-comment"># 更换源之后采用https协议，需要安装该软件才行</span>
-apt-get install apt-transport-https
-<span class="hljs-comment"># 安装ca-certificates</span>
-apt-get install ca-certificates
-<span class="hljs-comment"># 覆盖原始的内容</span>
-<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;&#x27;</span> &gt; sources.list
-<span class="hljs-comment"># 将清华的源拷贝进去(Ctrl+Shift+v)保存</span>
-vim sources.list
+<pre><code class="hljs vim"><span class="hljs-keyword">cd</span> /etc/apt
+# 保存原始的sources.<span class="hljs-keyword">list</span>文件
+<span class="hljs-keyword">cp</span> sources.<span class="hljs-keyword">list</span> sources.<span class="hljs-keyword">list</span>.bak
+apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span>
+# 安装编辑文本的工具，可以用自己顺手的<span class="hljs-keyword">vim</span>
+apt-<span class="hljs-built_in">get</span> install <span class="hljs-keyword">vim</span>
+# 更换源之后采用https协议，需要安装该软件才行
+apt-<span class="hljs-built_in">get</span> install apt-transport-https
+# 安装<span class="hljs-keyword">ca</span>-certificates
+apt-<span class="hljs-built_in">get</span> install <span class="hljs-keyword">ca</span>-certificates
+# 覆盖原始的内容
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&#x27;</span> &gt; sources.<span class="hljs-keyword">list</span>
+# 将清华的源拷贝进去(Ctrl+Shift+v)保存
+<span class="hljs-keyword">vim</span> sources.<span class="hljs-keyword">list</span>
 
-apt-get update</code></pre>
+apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span></code></pre>
 </li>
 </ul>
 </li>
