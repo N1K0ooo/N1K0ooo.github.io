@@ -1,0 +1,932 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;light&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201030172922.png">
+  <link rel="icon" type="image/png" href="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201030172922.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="A Wild IronMan who is learning how to create his Jarvis.">
+  <meta name="author" content="N1K0_">
+  <meta name="keywords" content="">
+  <title>Glibc PWN 0x1 环境搭建 - N1K0_  Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N1K0_'s Workshop</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('https://gitee.com/wang842948487/IMGbase/raw/master/img/20201031005601.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      N1K0_
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-10-24 00:30" pubdate>
+        2020年10月24日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-post-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-post-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">Glibc PWN 0x1 环境搭建</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="Glibc-PWN-0x1-环境搭建"><a href="#Glibc-PWN-0x1-环境搭建" class="headerlink" title="Glibc PWN 0x1 环境搭建"></a>Glibc PWN 0x1 环境搭建</h1><blockquote>
+<p>本文主要介绍Linux  Gibc PWN的环境搭建</p>
+</blockquote>
+<h2 id="系统选择"><a href="#系统选择" class="headerlink" title="系统选择"></a>系统选择</h2><ul>
+<li><p>虚拟机环境：Ubuntu16.04</p>
+<p>选用Ubuntu16.04的主要原因是方便进行堆入门</p>
+</li>
+</ul>
+<h2 id="必备软件"><a href="#必备软件" class="headerlink" title="必备软件"></a>必备软件</h2><h3 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h3><ul>
+<li><p>和正常的ubuntu一样，首先修改系统的源，这里使用的是清华的源：<br><a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/</a></p>
+</li>
+<li><p>依次执行下面的命令：</p>
+<div class="hljs"><pre><code class="hljs sh">   $ <span class="hljs-built_in">cd</span> /etc/apt
+   <span class="hljs-comment"># 保存原始的sources.list文件</span>
+   $ cp sources.list sources.list.bak
+   $ apt-get update
+   <span class="hljs-comment"># 安装编辑文本的工具</span>
+   $ apt-get install vim
+   <span class="hljs-comment"># 更换源之后采用https协议，需要安装该软件才行</span>
+   $ apt-get install apt-transport-https
+   <span class="hljs-comment"># 安装ca-certificates</span>
+   $ apt-get install ca-certificates
+   <span class="hljs-comment"># 覆盖原始的内容</span>
+   $ <span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;&#x27;</span> &gt; sources.list
+   <span class="hljs-comment"># 将清华的源拷贝进去(Ctrl+Shift+v)保存</span>
+   $ vim sources.list
+
+<span class="hljs-comment"># 更新源</span>
+   $ apt-get update</code></pre></div>
+
+</li>
+</ul>
+<h3 id="安装必备软件"><a href="#安装必备软件" class="headerlink" title="安装必备软件"></a>安装必备软件</h3><ul>
+<li><p>tmux</p>
+  <div class="hljs"><pre><code class="hljs sh">sudo apt-get install tmux
+<span class="hljs-comment"># 设置开启终端自动进入tmux</span>
+<span class="hljs-built_in">cd</span> ~
+vim .bashrc
+<span class="hljs-comment"># 在最底端添加</span>
+tmux
+
+<span class="hljs-comment"># 设置滚轮控制</span>
+$ <span class="hljs-built_in">cd</span> ~
+$ touch .tmux.conf
+$ vim .tmux.conf 
+<span class="hljs-comment"># 添加</span>
+<span class="hljs-built_in">set</span> -g mouse on</code></pre></div>
+
+
+</li>
+</ul>
+<ul>
+<li><p>VIM Make Cmake Git</p>
+  <div class="hljs"><pre><code class="hljs sh"><span class="hljs-comment"># VIM 编辑器</span>
+$ sudo apt-get install vim
+<span class="hljs-comment"># make</span>
+$ sudo apt-get install make
+<span class="hljs-comment"># cmake</span>
+$ sudo apt-get install cmake
+<span class="hljs-comment"># git</span>
+$ sudo apt-get install git</code></pre></div>
+</li>
+<li><p>安装Proxychains</p>
+<div class="hljs"><pre><code><pre><code class="hljs sh">  $ sudo apt install proxychains
+  <span class="hljs-comment"># 配置proxychains</span>
+  $ sudo vim /etc/proxychains.conf
+  <span class="hljs-comment"># 在proxychains.conf文件末尾修改你的socks5服务地址</span>
+
+[ProxyList]
+socks5  127.0.0.1 1080
+
+  <span class="hljs-comment"># 使用(此方法只能代理TCP链接) 在命令之前加上 proxychains 即可使用</span>
+<span class="hljs-comment"># sudo proxychains pip install &lt;package_name&gt;</span></code></pre></div></code></pre>
+</li>
+<li><p>安装ssh</p>
+<div class="hljs"><pre><code><pre><code class="hljs sh"><span class="hljs-comment"># 安装ssh服务</span>
+$ sudo apt-get install openssh-server
+<span class="hljs-comment"># 重启ssh服务</span>
+$ sudo service ssh restart
+<span class="hljs-comment"># 配置ssh免密登陆</span>
+1. 打开本地存放ssh秘钥对的文件
+C:\Users\用户名\.ssh
+ 
+2. 复制 id-rsa.pub 中内容
+ 
+3. 在ubuntu中新建如下文件
+vim /用户目录的绝对路径/.ssh/authorized_keys
+ 
+4. 将公钥内容写入authorized_keys中</code></pre></div></code></pre>
+</li>
+<li><p>安装x86环境</p>
+<div class="hljs"><pre><code><pre><code class="hljs sh">$ sudo apt-get install libc6-dev-i386
+$ sudo dpkg --add-architecture i386
+$ sudo apt-get update
+$ sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 zlib1g:i386
+$ sudo apt-get install lib32ncurses5 
+$ sudo apt-get install lib32z1</code></pre></div></code></pre>
+</li>
+</ul>
+<h3 id="安装-Linux-Glibc-Pwn常用软件"><a href="#安装-Linux-Glibc-Pwn常用软件" class="headerlink" title="安装 Linux Glibc Pwn常用软件"></a>安装 Linux Glibc Pwn常用软件</h3><h4 id="Pwntools"><a href="#Pwntools" class="headerlink" title="Pwntools"></a>Pwntools</h4><p>一个CTF框架和漏洞利用开发库，用Python开发， 必备神器，安装方法如下：</p>
+<ul>
+<li><p>Python3环境安装</p>
+  <div class="hljs"><pre><code class="hljs sh">$ sudo apt-get update
+$ sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
+$ sudo pip3 install pwntools</code></pre></div>
+</li>
+<li><p>Python2 环境安装     </p>
+  <div class="hljs"><pre><code class="hljs sh">$ sudo apt-get install python python-pip python-dev libssl-dev libffi-dev build-essential
+$ sudo pip install pwntools</code></pre></div>
+
+</li>
+</ul>
+<h4 id="Pwndbg-amp-Pwngdb"><a href="#Pwndbg-amp-Pwngdb" class="headerlink" title="Pwndbg &amp; Pwngdb"></a>Pwndbg &amp; Pwngdb</h4><p>动态调试必备神器<br><code>$ sudo apt-get install gdb</code></p>
+<div class="hljs"><pre><code class="hljs sh"><span class="hljs-comment"># 安装pwngdb</span>
+$ <span class="hljs-built_in">cd</span> ~/
+$ git <span class="hljs-built_in">clone</span> https://github.com/scwuaptx/Pwngdb.git 
+$ cp ~/Pwngdb/.gdbinit ~/
+
+<span class="hljs-comment"># 安装pwndbg</span>
+<span class="hljs-variable">$git</span> <span class="hljs-built_in">clone</span> https://github.com/pwndbg/pwndbg
+$ <span class="hljs-built_in">cd</span> pwndbg
+$ ./setup.sh
+     
+<span class="hljs-comment"># 联合使用</span>
+$ vim ~/.gdbinit
+然后写入
+<span class="hljs-string">&quot;source ~/pwndbg/gdbinit.py&quot;</span></code></pre></div>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201009131438.png" srcset="/img/loading.gif" alt="pwndbg"></p>
+<h4 id="libc-database"><a href="#libc-database" class="headerlink" title="libc-database"></a>libc-database</h4><p>根据泄露数据查找libc库版本的库，安装方法如下：</p>
+<div class="hljs"><pre><code class="hljs sh">$ git <span class="hljs-built_in">clone</span> https://github.com/niklasb/libc-database.git</code></pre></div>
+
+<h4 id="LibcSearcher"><a href="#LibcSearcher" class="headerlink" title="LibcSearcher"></a>LibcSearcher</h4><p>根据泄露数据查找libc库版本的库，省时，安装方法如下：</p>
+<div class="hljs"><pre><code class="hljs sh">$ git <span class="hljs-built_in">clone</span> https://github.com/lieanu/LibcSearcher.git
+$ <span class="hljs-built_in">cd</span> LibcSearcher
+$ python setup.py develop
+$ python3 setup.py develop <span class="hljs-comment"># 安装python3版</span></code></pre></div>
+
+<h4 id="ROPgadget"><a href="#ROPgadget" class="headerlink" title="ROPgadget"></a>ROPgadget</h4><div class="hljs"><pre><code class="hljs sh">$ sudo pip install capstone
+$ pip install ropgadget
+$ ROPgadget</code></pre></div>
+<h4 id="one-gadget"><a href="#one-gadget" class="headerlink" title="one_gadget"></a>one_gadget</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt install ruby
+$ apt-get install gem
+$ gem install one_gadget</code></pre></div>
+
+<h4 id="Ropper"><a href="#Ropper" class="headerlink" title="Ropper"></a>Ropper</h4><div class="hljs"><pre><code class="hljs sh">$ sudo pip install setuptools --upgrade
+$ sudo pip install capstone
+$ sudo pip install filebytes
+$ sudo pip install keystone-engine
+$ sudo pip install ropper
+$ sudo pip install pyvex</code></pre></div>
+
+<h4 id="Seccomp-Tools"><a href="#Seccomp-Tools" class="headerlink" title="Seccomp Tools"></a>Seccomp Tools</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt install gcc ruby-dev
+$ gem install seccomp-tools</code></pre></div>
+
+
+
+<h4 id="Qira"><a href="#Qira" class="headerlink" title="Qira"></a>Qira</h4><p>一个可以显示程序各个时间点堆栈结构的调试工具</p>
+<ul>
+<li><p>安装<br>  <code>cd ~/ &amp;&amp; wget -qO- https://github.com/geohot/qira/archive/v1.3.tar.gz | tar zx &amp;&amp; cd qira-1.3 &amp;&amp; ./install.sh</code></p>
+</li>
+<li><p>用法：<br>  <code>qira -s ./a.out</code>  之后使用 <code>nc localhost 4000</code>即可连接题目，同时调试信息会实时更新在3002端口，可直接在主机上用虚拟机的IP访问，比如我这边的网址就是<code>http://192.168.25.129:3002/</code><br>  同时qira还自带一个ida插件，但我还没开始研究<br>   <img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20200706215104.png" srcset="/img/loading.gif" alt="img"></p>
+</li>
+</ul>
+<h3 id="异构环境"><a href="#异构环境" class="headerlink" title="异构环境"></a>异构环境</h3><h4 id="QEMU"><a href="#QEMU" class="headerlink" title="QEMU"></a>QEMU</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt-get install qemu 
+$ sudo apt-get install qemu-user-static
+$ sudo apt-get install qemu-system
+$ sudo apt-get install uml-utilities
+$ sudo apt-get install bridge-utils</code></pre></div>
+
+<h4 id="gdb-mutiarch"><a href="#gdb-mutiarch" class="headerlink" title="gdb-mutiarch"></a>gdb-mutiarch</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt-get install gdb-multiarch</code></pre></div>
+
+<h4 id="binwalk"><a href="#binwalk" class="headerlink" title="binwalk"></a>binwalk</h4><div class="hljs"><pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> https://github.com/ReFirmLabs/binwalk.git
+<span class="hljs-built_in">cd</span> binwalk
+$ sudo python setup.py install
+
+$ sudo apt-get install python-lzma
+$ sudo pip install nose coverage
+$ sudo apt-get install python-crypto
+$ sudo apt-get install libqt4-opengl python-opengl python-qt4 python-qt4-gl python-numpy python-scipy python-pip
+$ sudo pip install pyqtgraph
+$ sudo apt-get install python-pip
+$ sudo pip install capstone
+$ sudo apt-get install mtd-utils gzip bzip2 tar arj lhasa p7zip p7zip-full cabextract cramfsprogs cramfsswap squashfs-tools sleuthkit default-jdk lzop srecord
+
+$ sudo ./deps.sh</code></pre></div>
+
+<h4 id="buildroot"><a href="#buildroot" class="headerlink" title="buildroot"></a>buildroot</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt install gcc build-essential bison flex gettext tcl sharutils libncurses-dev zlib1g-dev exuberant-ctags g++ texinfo patch vim libtool bc git
+<span class="hljs-comment"># 从该网址中下载buildroot</span>
+https://buildroot.org/download.html</code></pre></div>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/PWN/">PWN</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF-PWN-Glibc-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">CTF,PWN,Glibc,环境配置</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/10/25/PWN%20NOTE/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PWN NOTE</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "BC8977lXvuPHlruJsv3NsMKh-gzGzoHsz",
+          app_key: "U5wynESljzvPrIHxNglF7gF1",
+          placeholder: "Say Something.",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: true,
+          recordIP: false,
+          serverURLs: "https://bc8977lx.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a><span>谨以此让当下逝去的时光得以隽永.</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer>
+  (function () {
+    // 查询存储的记录
+    function getRecord(Counter, target) {
+      return new Promise(function (resolve, reject) {
+        Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({target})))
+          .then(resp => resp.json())
+          .then(({results, code, error}) => {
+            if (code === 401) {
+              throw error;
+            }
+            if (results && results.length > 0) {
+              var record = results[0];
+              resolve(record);
+            } else {
+              Counter('post', '/classes/Counter', {target, time: 0})
+                .then(resp => resp.json())
+                .then((record, error) => {
+                  if (error) {
+                    throw error;
+                  }
+                  resolve(record);
+                }).catch(error => {
+                console.error('Failed to create', error);
+                reject(error);
+              });
+            }
+          }).catch((error) => {
+          console.error('LeanCloud Counter Error:', error);
+          reject(error);
+        });
+      })
+    }
+
+    // 发起自增请求
+    function increment(Counter, incrArr) {
+      return new Promise(function (resolve, reject) {
+        Counter('post', '/batch', {
+          "requests": incrArr
+        }).then((res) => {
+          res = res.json();
+          if (res.error) {
+            throw res.error;
+          }
+          resolve(res);
+        }).catch((error) => {
+          console.error('Failed to save visitor count', error);
+          reject(error);
+        });
+      });
+    }
+
+    // 构建自增请求体
+    function buildIncrement(objectId) {
+      return {
+        "method": "PUT",
+        "path": `/1.1/classes/Counter/${ objectId }`,
+        "body": {
+          "time": {
+            '__op': 'Increment',
+            'amount': 1
+          }
+        }
+      }
+    }
+
+    // 校验是否为有效的 UV
+    function validUV() {
+      var key = 'LeanCloud_UV_Flag';
+      var flag = localStorage.getItem(key);
+      if (flag) {
+        // 距离标记小于 24 小时则不计为 UV
+        if (new Date().getTime() - parseInt(flag) <= 86400000) {
+          return false;
+        }
+      }
+      localStorage.setItem(key, new Date().getTime().toString());
+      return true;
+    }
+
+    function addCount(Counter) {
+      var enableIncr = 'true' === 'true' && window.location.hostname !== 'localhost';
+      var getterArr = [];
+      var incrArr = [];
+
+      // 请求 PV 并自增
+      var pvCtn = document.querySelector('#leancloud-site-pv-container');
+      if (pvCtn || enableIncr) {
+        var pvGetter = getRecord(Counter, 'site-pv').then((record) => {
+          incrArr.push(buildIncrement(record.objectId))
+          var ele = document.querySelector('#leancloud-site-pv');
+          if (ele) {
+            ele.innerText = record.time + 1;
+            if (pvCtn) {
+              pvCtn.style.display = 'inline';
+            }
+          }
+        });
+        getterArr.push(pvGetter);
+      }
+
+      // 请求 UV 并自增
+      var uvCtn = document.querySelector('#leancloud-site-uv-container');
+      if (uvCtn || enableIncr) {
+        var uvGetter = getRecord(Counter, 'site-uv').then((record) => {
+          var vuv = validUV();
+          vuv && incrArr.push(buildIncrement(record.objectId))
+          var ele = document.querySelector('#leancloud-site-uv');
+          if (ele) {
+            ele.innerText = record.time + (vuv ? 1 : 0);
+            if (uvCtn) {
+              uvCtn.style.display = 'inline';
+            }
+          }
+        });
+        getterArr.push(uvGetter);
+      }
+
+      // 如果是文章，请求文章的浏览数，并自增
+      if ('true' === 'true') {
+        var viewCtn = document.querySelector('#leancloud-post-views-container');
+        if (viewCtn || enableIncr) {
+          var target = decodeURI('/2020/10/24/Glibc%20PWN%200x1%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/');
+          var viewGetter = getRecord(Counter, target).then((record) => {
+            incrArr.push(buildIncrement(record.objectId))
+            if (viewCtn) {
+              var ele = document.querySelector('#leancloud-post-views');
+              if (ele) {
+                ele.innerText = (record.time || 0) + 1;
+                viewCtn.style.display = 'inline';
+              }
+            }
+          });
+          getterArr.push(viewGetter);
+        }
+      }
+
+      // 如果启动计数自增，批量发起自增请求
+      if (enableIncr) {
+        Promise.all(getterArr).then(() => {
+          incrArr.length > 0 && increment(Counter, incrArr);
+        })
+      }
+    }
+
+    var app_id = 'BC8977lXvuPHlruJsv3NsMKh-gzGzoHsz'
+    var app_key = 'U5wynESljzvPrIHxNglF7gF1'
+    var server_url = 'https://bc8977lx.lc-cn-n1-shared.com'
+
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${ api_server }/1.1${ url }`, {
+          method,
+          headers: {
+            'X-LC-Id': app_id,
+            'X-LC-Key': app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+
+      addCount(Counter);
+    }
+
+    var api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${ app_id.slice(0, 8).toLowerCase() }.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(resp => resp.json())
+        .then(({api_server}) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Glibc PWN 0x1 环境搭建&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>
