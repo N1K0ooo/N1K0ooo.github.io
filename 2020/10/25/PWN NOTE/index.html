@@ -359,7 +359,7 @@ gdb.attach(proc.pidof(p)[<span class="hljs-number">0</span>],gdbscript=<span cla
 </ul>
 </li>
 </ul>
-<h2 id="小Trick"><a href="#小Trick" class="headerlink" title="小Trick"></a>小Trick</h2><ul>
+<h2 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h2><ul>
 <li><p>去除pwn题中alarm函数</p>
 <ul>
 <li><code>sed -i s/alarm/isnan/g ./xxx</code></li>
@@ -390,6 +390,11 @@ gdb.attach(proc.pidof(p)[<span class="hljs-number">0</span>],gdbscript=<span cla
 <ul>
 <li><p><code>pwndbg&gt; p *(const struct _IO_jump_t *) IO_2_1_stdout.vtable</code></p>
 <p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201001210525.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+</li>
+<li><p>查看关键的结构体指针</p>
+<p><code>p _IO_str_jumps</code></p>
+<p>其他指针也可以查看，直接补全即可</p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201105150459.png" srcset="/img/loading.gif" alt="img"></p>
 </li>
 </ul>
 </li>
@@ -437,6 +442,8 @@ gdb.attach(proc.pidof(p)[<span class="hljs-number">0</span>],gdbscript=<span cla
 <p><code>dir ~/pwn/others/source/glibc-2.27/malloc/</code></p>
 </li>
 </ul>
+</li>
+<li><p>32位程序Canary位置：<code>$ebp - 0xc</code></p>
 </li>
 </ul>
 <h2 id="关于-x00"><a href="#关于-x00" class="headerlink" title="关于\x00"></a>关于\x00</h2><ul>
