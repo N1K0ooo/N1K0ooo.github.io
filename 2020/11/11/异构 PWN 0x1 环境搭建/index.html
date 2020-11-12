@@ -17,7 +17,7 @@
   <meta name="description" content="A Wild IronMan who is learning how to create his Jarvis.">
   <meta name="author" content="N1K0_">
   <meta name="keywords" content="">
-  <title>Glibc PWN 0x1 环境搭建 - N1K0_  Blog</title>
+  <title>异构 PWN 0x1 环境搭建 - N1K0_  Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -162,7 +162,7 @@
 </nav>
 
     <div class="banner intro-2" id="background" parallax=true
-         style="background: url('https://gitee.com/wang842948487/IMGbase/raw/master/img/20201031005601.png') no-repeat center center;
+         style="background: url('https://gitee.com/wang842948487/IMGbase/raw/master/img/20201112093627.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
@@ -182,8 +182,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-10-24 00:30" pubdate>
-        2020年10月24日 凌晨
+      <time datetime="2020-11-11 00:30" pubdate>
+        2020年11月11日 凌晨
       </time>
     </span>
   
@@ -194,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.1k 字
+      1k 字
     </span>
   
 
@@ -204,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      16
+      12
        分钟
     </span>
   
@@ -242,198 +242,71 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">Glibc PWN 0x1 环境搭建</h1>
+            <h1 style="display: none">异构 PWN 0x1 环境搭建</h1>
             
             <div class="markdown-body" id="post-body">
-              <h1 id="Glibc-PWN-0x1-环境搭建"><a href="#Glibc-PWN-0x1-环境搭建" class="headerlink" title="Glibc PWN 0x1 环境搭建"></a>Glibc PWN 0x1 环境搭建</h1><blockquote>
-<p>本文主要介绍Linux  Gibc PWN的环境搭建</p>
+              <h1 id="异构-PWN-0x1-环境搭建"><a href="#异构-PWN-0x1-环境搭建" class="headerlink" title="异构 PWN 0x1 环境搭建"></a>异构 PWN 0x1 环境搭建</h1><blockquote>
+<p>最近一个月各种干活，没能抽出固定的时间来学习   ) :</p>
+<p>之前学习的笔记比较零散，最近准备抽时间全部整理到博客上</p>
+<p>本文内容是异构环境的搭建和使用，参考了A1ex的博客</p>
+<p><a target="_blank" rel="noopener" href="https://a1ex.online/2020/10/09/mips-pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">https://a1ex.online/2020/10/09/mips-pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</a></p>
 </blockquote>
-<h2 id="系统选择"><a href="#系统选择" class="headerlink" title="系统选择"></a>系统选择</h2><ul>
-<li><p>虚拟机环境：Ubuntu16.04</p>
-<p>选用Ubuntu16.04的主要原因是方便进行堆入门</p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><h3 id="QEMU安装"><a href="#QEMU安装" class="headerlink" title="QEMU安装"></a>QEMU安装</h3><div class="hljs"><pre><code class="hljs sh">sudo apt-get install qemu 
+sudo apt-get install qemu-user-static
+sudo apt-get install qemu-system
+sudo apt-get install uml-utilities
+sudo apt-get install bridge-utils</code></pre></div>
+
+<h3 id="IDA-mipsrop插件"><a href="#IDA-mipsrop插件" class="headerlink" title="IDA mipsrop插件"></a>IDA mipsrop插件</h3><p>一款用于搜索mips中gadgets和function call的插件，下载地址如下</p>
+<p><code>https://github.com/devttys0/ida/tree/master/plugins/mipsrop</code></p>
+<p>但实际上该版本的mipsrop插件并不能在7.0中使用，需要下载旧版</p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201111230421.png" srcset="/img/loading.gif" alt="image-20201111230420992"></p>
+<h3 id="Ghidra"><a href="#Ghidra" class="headerlink" title="Ghidra"></a>Ghidra</h3><p>NASA发布的逆向神器，支持mips的反编译，在主机上配置好java环境即可使用</p>
+<h3 id="MIPS汇编指令学习"><a href="#MIPS汇编指令学习" class="headerlink" title="MIPS汇编指令学习"></a>MIPS汇编指令学习</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/CoBrAMG/p/9237609.html">https://www.cnblogs.com/CoBrAMG/p/9237609.html</a></p>
+<h2 id="QEMU系统模式"><a href="#QEMU系统模式" class="headerlink" title="QEMU系统模式"></a>QEMU系统模式</h2><p>暂略</p>
+<p><a target="_blank" rel="noopener" href="https://a1ex.online/2020/10/09/mips-pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">https://a1ex.online/2020/10/09/mips-pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</a></p>
+<p>之前配置过，但目前用的比较少，听征哥说可以利用bulitroot直接编译出其他架构的linux内核，但还没来得及深入研究，等学习到linux内核再看吧</p>
+<h2 id="QEMU用户模式"><a href="#QEMU用户模式" class="headerlink" title="QEMU用户模式"></a>QEMU用户模式</h2><h3 id="运行程序"><a href="#运行程序" class="headerlink" title="运行程序"></a>运行程序</h3><ul>
+<li><p>用户模式配置更简单，也更常用，这里以32位mipsel程序为例，可以看到除了程序外还有其依赖的<code>.so</code>文件</p>
+<p>  <img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201111233038.png" srcset="/img/loading.gif" alt="image-20201111233038787"></p>
+<p>  此时有三种方法可以运行程序</p>
 </li>
 </ul>
-<h2 id="必备软件"><a href="#必备软件" class="headerlink" title="必备软件"></a>必备软件</h2><h3 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h3><ul>
-<li><p>和正常的ubuntu一样，首先修改系统的源，这里使用的是清华的源：<br><a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/</a></p>
-</li>
-<li><p>依次执行下面的命令：</p>
-<div class="hljs"><pre><code class="hljs sh">   $ <span class="hljs-built_in">cd</span> /etc/apt
-   <span class="hljs-comment"># 保存原始的sources.list文件</span>
-   $ cp sources.list sources.list.bak
-   $ apt-get update
-   <span class="hljs-comment"># 安装编辑文本的工具</span>
-   $ apt-get install vim
-   <span class="hljs-comment"># 更换源之后采用https协议，需要安装该软件才行</span>
-   $ apt-get install apt-transport-https
-   <span class="hljs-comment"># 安装ca-certificates</span>
-   $ apt-get install ca-certificates
-   <span class="hljs-comment"># 覆盖原始的内容</span>
-   $ <span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;&#x27;</span> &gt; sources.list
-   <span class="hljs-comment"># 将清华的源拷贝进去(Ctrl+Shift+v)保存</span>
-   $ vim sources.list
+<h4 id="1-修改系统根目录"><a href="#1-修改系统根目录" class="headerlink" title="1. 修改系统根目录"></a>1. 修改系统根目录</h4><p>既然题目已经给了程序所依赖的库，那么我们直接将系统的根目录设定到题目所在目录，即可解决依赖问题</p>
+<p>qemu的用户模式分为<code>qemu-user</code>和<code>qemu-user-static</code>, 其中后者是静态编译的, 本身不需要其他依赖库, 因此可以在此处使用(因为修改了系统根目录后原本的依赖会失效)</p>
+<p>修改系统根目录可以通过<code>chroot</code>命令实现, 具体指令如下</p>
+<p><code>sudo chroot . ./qemu-mipsel-static HelloMIPS</code>[需要提前将 qemu-mipsel-static放置在程序目录中]</p>
+<h4 id="2-手动将依赖库放置到指定位置"><a href="#2-手动将依赖库放置到指定位置" class="headerlink" title="2. 手动将依赖库放置到指定位置"></a>2. 手动将依赖库放置到指定位置</h4><p>直接运行程序时,往往会出现以下错误信息</p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201111235432.png" srcset="/img/loading.gif" alt="image-20201111235432037"></p>
+<p>我们只需要将题目所给的依赖库放入<code>/lib/</code>中,并修改为其指定的名字即可执行</p>
+<h4 id="3-指定依赖库路径"><a href="#3-指定依赖库路径" class="headerlink" title="3. 指定依赖库路径"></a>3. 指定依赖库路径</h4><p>通过<code>qemu</code>的<code>-L</code>参数指定程序依赖库的路径</p>
+<p><code>$ qemu-aarch64 -L .  HelloARM</code></p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201112001700.png" srcset="/img/loading.gif" alt="image-20201112001659894"></p>
+<h3 id="调试程序"><a href="#调试程序" class="headerlink" title="调试程序"></a>调试程序</h3><p>调试程序同样有三种方式,这里强推第三种</p>
+<h4 id="1-使用socat挂载"><a href="#1-使用socat挂载" class="headerlink" title="1. 使用socat挂载"></a>1. 使用socat挂载</h4><p>使用socat命令挂载程序</p>
+<p><code>socat tcp-l:10002,fork exec:&quot;qemu-mipsel -g 1234  -L . ./HelloMIPS&quot;,reuseaddr</code></p>
+<p>此时<code>10002</code>为pwntools的端口</p>
+<p><code>1234</code>为gdb的端口</p>
+<p>在调试时,在pwntools脚本中加一个<code>pause</code>让程序暂停,紧接着打开gdb<code>gdb-multiarch HelloMIPS</code></p>
+<p>之后使用指令<code>target remote 127.0.0.1</code>即可连上程序进行调试</p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201112002446.png" srcset="/img/loading.gif" alt="image-20201112002446047"></p>
+<p>如果出现端口占用的情况， 需要通过指令杀死socat进程</p>
+<p><code>killall socat</code></p>
+<h4 id="2-在PWNTOOLS中使用指令挂载"><a href="#2-在PWNTOOLS中使用指令挂载" class="headerlink" title="2. 在PWNTOOLS中使用指令挂载"></a>2. 在PWNTOOLS中使用指令挂载</h4><p>第一种方法本质上是开了两个端口,一个用于pwntools脚本,一个用于gdb</p>
+<p>但这样需要开3个终端,太麻烦了</p>
+<p>因此我们直接在pwntools脚本中执行<code>qemu-mipsel -g 1234  -L . ./HelloMIPS</code>,然后 在通过gdb本地连接上, 这样只需要两个终端即可</p>
+<p>代码如下:</p>
+<div class="hljs"><pre><code class="hljs python">p = process([<span class="hljs-string">&quot;qemu-mipsel&quot;</span>, <span class="hljs-string">&quot;-g&quot;</span>, <span class="hljs-string">&quot;1234&quot;</span>,<span class="hljs-string">&quot;./HelloMIPS&quot;</span>])</code></pre></div>
 
-<span class="hljs-comment"># 更新源</span>
-   $ apt-get update</code></pre></div>
+<p>之后步骤同1一样</p>
+<h4 id="3-在PWNTOOLS中通过gdb-debug的方法调试"><a href="#3-在PWNTOOLS中通过gdb-debug的方法调试" class="headerlink" title="3. 在PWNTOOLS中通过gdb.debug的方法调试"></a>3. 在PWNTOOLS中通过gdb.debug的方法调试</h4><p>第二种方法实际上已经比较完美了,但美中不足的是, 我们需要在脚本的开头设置一个<code>pause</code>, 然后在手动操作gdb连上去, 还是有点麻烦</p>
+<p>有没有一种方法可以把这个过程自动化呢，其实是有的，其代码如下：</p>
+<div class="hljs"><pre><code class="hljs python">context.binary = <span class="hljs-string">&#x27;HelloMIPS&#x27;</span>
+context.terminal = [<span class="hljs-string">&#x27;tmux&#x27;</span>,<span class="hljs-string">&#x27;splitw&#x27;</span>,<span class="hljs-string">&#x27;-h&#x27;</span>]
+p = gdb.debug(context.binary.path)</code></pre></div>
 
-</li>
-</ul>
-<h3 id="安装必备软件"><a href="#安装必备软件" class="headerlink" title="安装必备软件"></a>安装必备软件</h3><ul>
-<li><p>tmux</p>
-  <div class="hljs"><pre><code class="hljs sh">sudo apt-get install tmux
-<span class="hljs-comment"># 设置开启终端自动进入tmux</span>
-<span class="hljs-built_in">cd</span> ~
-vim .bashrc
-<span class="hljs-comment"># 在最底端添加</span>
-tmux
+<p>使用时和以上两种方法类似</p>
 
-<span class="hljs-comment"># 设置滚轮控制</span>
-$ <span class="hljs-built_in">cd</span> ~
-$ touch .tmux.conf
-$ vim .tmux.conf 
-<span class="hljs-comment"># 添加</span>
-<span class="hljs-built_in">set</span> -g mouse on</code></pre></div>
-
-
-</li>
-</ul>
-<ul>
-<li><p>VIM Make Cmake Git</p>
-  <div class="hljs"><pre><code class="hljs sh"><span class="hljs-comment"># VIM 编辑器</span>
-$ sudo apt-get install vim
-<span class="hljs-comment"># make</span>
-$ sudo apt-get install make
-<span class="hljs-comment"># cmake</span>
-$ sudo apt-get install cmake
-<span class="hljs-comment"># git</span>
-$ sudo apt-get install git</code></pre></div>
-</li>
-<li><p>安装Proxychains</p>
-<div class="hljs"><pre><code><pre><code class="hljs sh">  $ sudo apt install proxychains
-  <span class="hljs-comment"># 配置proxychains</span>
-  $ sudo vim /etc/proxychains.conf
-  <span class="hljs-comment"># 在proxychains.conf文件末尾修改你的socks5服务地址</span>
-
-[ProxyList]
-socks5  127.0.0.1 1080
-
-  <span class="hljs-comment"># 使用(此方法只能代理TCP链接) 在命令之前加上 proxychains 即可使用</span>
-<span class="hljs-comment"># sudo proxychains pip install &lt;package_name&gt;</span></code></pre></div></code></pre>
-</li>
-<li><p>安装ssh</p>
-<div class="hljs"><pre><code><pre><code class="hljs sh"><span class="hljs-comment"># 安装ssh服务</span>
-$ sudo apt-get install openssh-server
-<span class="hljs-comment"># 重启ssh服务</span>
-$ sudo service ssh restart
-<span class="hljs-comment"># 配置ssh免密登陆</span>
-1. 打开本地存放ssh秘钥对的文件
-C:\Users\用户名\.ssh
- 
-2. 复制 id-rsa.pub 中内容
- 
-3. 在ubuntu中新建如下文件
-vim /用户目录的绝对路径/.ssh/authorized_keys
- 
-4. 将公钥内容写入authorized_keys中</code></pre></div></code></pre>
-</li>
-<li><p>安装x86环境</p>
-<div class="hljs"><pre><code><pre><code class="hljs sh">$ sudo apt-get install libc6-dev-i386
-$ sudo dpkg --add-architecture i386
-$ sudo apt-get update
-$ sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 zlib1g:i386
-$ sudo apt-get install lib32ncurses5 
-$ sudo apt-get install lib32z1</code></pre></div></code></pre>
-</li>
-</ul>
-<h3 id="安装-Linux-Glibc-Pwn常用软件"><a href="#安装-Linux-Glibc-Pwn常用软件" class="headerlink" title="安装 Linux Glibc Pwn常用软件"></a>安装 Linux Glibc Pwn常用软件</h3><h4 id="Pwntools"><a href="#Pwntools" class="headerlink" title="Pwntools"></a>Pwntools</h4><p>一个CTF框架和漏洞利用开发库，用Python开发， 必备神器，安装方法如下：</p>
-<ul>
-<li><p>Python3环境安装</p>
-  <div class="hljs"><pre><code class="hljs sh">$ sudo apt-get update
-$ sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
-$ sudo pip3 install pwntools</code></pre></div>
-</li>
-<li><p>Python2 环境安装     </p>
-  <div class="hljs"><pre><code class="hljs sh">$ sudo apt-get install python python-pip python-dev libssl-dev libffi-dev build-essential
-$ sudo pip install pwntools</code></pre></div>
-
-</li>
-</ul>
-<h4 id="Pwndbg-amp-Pwngdb"><a href="#Pwndbg-amp-Pwngdb" class="headerlink" title="Pwndbg &amp; Pwngdb"></a>Pwndbg &amp; Pwngdb</h4><p>动态调试必备神器<br><code>$ sudo apt-get install gdb</code></p>
-<div class="hljs"><pre><code class="hljs sh"><span class="hljs-comment"># 安装pwngdb</span>
-$ <span class="hljs-built_in">cd</span> ~/
-$ git <span class="hljs-built_in">clone</span> https://github.com/scwuaptx/Pwngdb.git 
-$ cp ~/Pwngdb/.gdbinit ~/
-
-<span class="hljs-comment"># 安装pwndbg</span>
-<span class="hljs-variable">$git</span> <span class="hljs-built_in">clone</span> https://github.com/pwndbg/pwndbg
-$ <span class="hljs-built_in">cd</span> pwndbg
-$ ./setup.sh
-     
-<span class="hljs-comment"># 联合使用</span>
-$ vim ~/.gdbinit
-然后写入
-<span class="hljs-string">&quot;source ~/pwndbg/gdbinit.py&quot;</span></code></pre></div>
-<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20201009131438.png" srcset="/img/loading.gif" alt="pwndbg"></p>
-<h4 id="libc-database"><a href="#libc-database" class="headerlink" title="libc-database"></a>libc-database</h4><p>根据泄露数据查找libc库版本的库，安装方法如下：</p>
-<div class="hljs"><pre><code class="hljs sh">$ git <span class="hljs-built_in">clone</span> https://github.com/niklasb/libc-database.git</code></pre></div>
-
-<h4 id="LibcSearcher"><a href="#LibcSearcher" class="headerlink" title="LibcSearcher"></a>LibcSearcher</h4><p>根据泄露数据查找libc库版本的库，省时，安装方法如下：</p>
-<div class="hljs"><pre><code class="hljs sh">$ git <span class="hljs-built_in">clone</span> https://github.com/lieanu/LibcSearcher.git
-$ <span class="hljs-built_in">cd</span> LibcSearcher
-$ python setup.py develop
-$ python3 setup.py develop <span class="hljs-comment"># 安装python3版</span></code></pre></div>
-
-<h4 id="ROPgadget"><a href="#ROPgadget" class="headerlink" title="ROPgadget"></a>ROPgadget</h4><div class="hljs"><pre><code class="hljs sh">$ sudo pip install capstone
-$ pip install ropgadget
-$ ROPgadget</code></pre></div>
-<h4 id="one-gadget"><a href="#one-gadget" class="headerlink" title="one_gadget"></a>one_gadget</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt install ruby
-$ apt-get install gem
-$ gem install one_gadget</code></pre></div>
-
-<h4 id="Ropper"><a href="#Ropper" class="headerlink" title="Ropper"></a>Ropper</h4><div class="hljs"><pre><code class="hljs sh">$ sudo pip install setuptools --upgrade
-$ sudo pip install capstone
-$ sudo pip install filebytes
-$ sudo pip install keystone-engine
-$ sudo pip install ropper
-$ sudo pip install pyvex</code></pre></div>
-
-<h4 id="Seccomp-Tools"><a href="#Seccomp-Tools" class="headerlink" title="Seccomp Tools"></a>Seccomp Tools</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt install gcc ruby-dev
-$ gem install seccomp-tools</code></pre></div>
-
-
-
-<h4 id="Qira"><a href="#Qira" class="headerlink" title="Qira"></a>Qira</h4><p>一个可以显示程序各个时间点堆栈结构的调试工具</p>
-<ul>
-<li><p>安装<br>  <code>cd ~/ &amp;&amp; wget -qO- https://github.com/geohot/qira/archive/v1.3.tar.gz | tar zx &amp;&amp; cd qira-1.3 &amp;&amp; ./install.sh</code></p>
-</li>
-<li><p>用法：<br>  <code>qira -s ./a.out</code>  之后使用 <code>nc localhost 4000</code>即可连接题目，同时调试信息会实时更新在3002端口，可直接在主机上用虚拟机的IP访问，比如我这边的网址就是<code>http://192.168.25.129:3002/</code><br>  同时qira还自带一个ida插件，但我还没开始研究<br>   <img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/20200706215104.png" srcset="/img/loading.gif" alt="img"></p>
-</li>
-</ul>
-<h3 id="异构环境"><a href="#异构环境" class="headerlink" title="异构环境"></a>异构环境</h3><h4 id="QEMU"><a href="#QEMU" class="headerlink" title="QEMU"></a>QEMU</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt-get install qemu 
-$ sudo apt-get install qemu-user-static
-$ sudo apt-get install qemu-system
-$ sudo apt-get install uml-utilities
-$ sudo apt-get install bridge-utils</code></pre></div>
-
-<h4 id="gdb-mutiarch"><a href="#gdb-mutiarch" class="headerlink" title="gdb-mutiarch"></a>gdb-mutiarch</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt-get install gdb-multiarch</code></pre></div>
-
-<h4 id="binwalk"><a href="#binwalk" class="headerlink" title="binwalk"></a>binwalk</h4><div class="hljs"><pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> https://github.com/ReFirmLabs/binwalk.git
-<span class="hljs-built_in">cd</span> binwalk
-$ sudo python setup.py install
-
-$ sudo apt-get install python-lzma
-$ sudo pip install nose coverage
-$ sudo apt-get install python-crypto
-$ sudo apt-get install libqt4-opengl python-opengl python-qt4 python-qt4-gl python-numpy python-scipy python-pip
-$ sudo pip install pyqtgraph
-$ sudo apt-get install python-pip
-$ sudo pip install capstone
-$ sudo apt-get install mtd-utils gzip bzip2 tar arj lhasa p7zip p7zip-full cabextract cramfsprogs cramfsswap squashfs-tools sleuthkit default-jdk lzop srecord
-
-$ sudo ./deps.sh</code></pre></div>
-
-<h4 id="buildroot"><a href="#buildroot" class="headerlink" title="buildroot"></a>buildroot</h4><div class="hljs"><pre><code class="hljs sh">$ sudo apt install gcc build-essential bison flex gettext tcl sharutils libncurses-dev zlib1g-dev exuberant-ctags g++ texinfo patch vim libtool bc git
-<span class="hljs-comment"># 从该网址中下载buildroot</span>
-https://buildroot.org/download.html</code></pre></div>
             </div>
             <hr>
             <div>
@@ -446,7 +319,7 @@ https://buildroot.org/download.html</code></pre></div>
                     
                       <a class="hover-with-bg" href="/categories/CTF/PWN/">PWN</a>
                     
-                      <a class="hover-with-bg" href="/categories/CTF/PWN/Glibc/">Glibc</a>
+                      <a class="hover-with-bg" href="/categories/CTF/PWN/%E5%BC%82%E6%9E%84/">异构</a>
                     
                   </div>
                 
@@ -454,7 +327,7 @@ https://buildroot.org/download.html</code></pre></div>
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/CTF-PWN-Glibc-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">CTF,PWN,Glibc,环境配置</a>
+                      <a class="hover-with-bg" href="/tags/CTF-PWN-%E5%BC%82%E6%9E%84-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">CTF,PWN,异构,环境搭建</a>
                     
                   </div>
                 
@@ -467,15 +340,21 @@ https://buildroot.org/download.html</code></pre></div>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/10/25/PWN%20NOTE/">
+                      <a href="/2020/11/12/%E5%BC%82%E6%9E%84%20PWN%200x2%20%E5%85%A5%E9%97%A8/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">PWN NOTE</span>
+                        <span class="hidden-mobile">异构 PWN 0x2 入门</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2020/10/25/PWN%20NOTE/">
+                        <span class="hidden-mobile">PWN NOTE</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
@@ -751,7 +630,7 @@ https://buildroot.org/download.html</code></pre></div>
       if ('true' === 'true') {
         var viewCtn = document.querySelector('#leancloud-post-views-container');
         if (viewCtn || enableIncr) {
-          var target = decodeURI('/2020/10/24/Glibc%20PWN%200x1%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/');
+          var target = decodeURI('/2020/11/11/%E5%BC%82%E6%9E%84%20PWN%200x1%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/');
           var viewGetter = getRecord(Counter, target).then((record) => {
             incrArr.push(buildIncrement(record.objectId))
             if (viewCtn) {
@@ -845,7 +724,7 @@ https://buildroot.org/download.html</code></pre></div>
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Glibc PWN 0x1 环境搭建&nbsp;",
+        "异构 PWN 0x1 环境搭建&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
