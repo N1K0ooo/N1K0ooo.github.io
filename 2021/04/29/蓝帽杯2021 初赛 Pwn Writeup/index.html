@@ -30,7 +30,7 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/tomorrow-night.min.css" />
     
   
 
@@ -304,7 +304,10 @@
 <p>这样就可以利用 <code>code_base</code>下断点调试，并且通过 <code>got</code>表获得 <code>libc_base</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell"><span class="hljs-meta">pwndbg&gt;</span><span class="bash"> vmmap</span><br>LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA<br>0xff7aa000 0xff7cb000 r-xp    21000 0      [linker]<br>0xff7aa000 0xff7cb000 r-xp    21000 0      /root/pwn/bluehat/portable_rpg/lib/ld-linux-armhf.so.3<br>0xff7cb000 0xff7da000 ---p     f000 20000  [linker]<br>0xff7cb000 0xff7da000 ---p     f000 20000  /root/pwn/bluehat/portable_rpg/lib/ld-linux-armhf.so.3<br>0xff7da000 0xff7db000 r--p     1000 20000  [linker]<br>0xff7da000 0xff7db000 r--p     1000 20000  /root/pwn/bluehat/portable_rpg/lib/ld-linux-armhf.so.3<br>0xff7db000 0xff7dc000 rw-p     1000 21000  [linker]<br>0xff7db000 0xff7dc000 rw-p     1000 21000  /root/pwn/bluehat/portable_rpg/lib/ld-linux-armhf.so.3<br>0xfffdb000 0xfffdd000 rw-p     2000 0      [stack]<br>0xfffdd000 0xfffdf000 r-xp     2000 0      /root/pwn/bluehat/portable_rpg/vuln<br>0xfffdf000 0xfffee000 ---p     f000 1000   /root/pwn/bluehat/portable_rpg/vuln<br>0xfffee000 0xfffef000 r--p     1000 1000   /root/pwn/bluehat/portable_rpg/vuln<br>0xfffef000 0xffff0000 rw-p     1000 2000   /root/pwn/bluehat/portable_rpg/vuln<br><br>[QEMU target detected - vmmap result might not be accurate; see `help vmmap`]<br></code></pre></div></td></tr></table></figure>
 
-<h4 id="在没有符号表情况下查找-main-arena"><a href="#在没有符号表情况下查找-main-arena" class="headerlink" title="在没有符号表情况下查找 main_arena"></a>在没有符号表情况下查找 <code>main_arena</code></h4><p>这里完全参考自 <a target="_blank" rel="noopener" href="http://www.giantbranch.cn/2018/09/30/%E6%B2%A1%E6%9C%89libc6-dbg%E7%9A%84%E7%AC%A6%E5%8F%B7%E5%A6%82%E4%BD%95%E6%9F%A5%E6%89%BEmain_arena/">http://www.giantbranch.cn/2018/09/30/%E6%B2%A1%E6%9C%89libc6-dbg%E7%9A%84%E7%AC%A6%E5%8F%B7%E5%A6%82%E4%BD%95%E6%9F%A5%E6%89%BEmain_arena/</a></p>
+<h4 id="在没有符号表情况下查找-main-arena"><a href="#在没有符号表情况下查找-main-arena" class="headerlink" title="在没有符号表情况下查找 main_arena"></a>在没有符号表情况下查找 <code>main_arena</code></h4><p>这里完全引用自<code>Ex</code>大佬博客</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.giantbranch.cn/2018/09/30/%E6%B2%A1%E6%9C%89libc6-dbg%E7%9A%84%E7%AC%A6%E5%8F%B7%E5%A6%82%E4%BD%95%E6%9F%A5%E6%89%BEmain_arena/">http://www.giantbranch.cn/2018/09/30/%E6%B2%A1%E6%9C%89libc6-dbg%E7%9A%84%E7%AC%A6%E5%8F%B7%E5%A6%82%E4%BD%95%E6%9F%A5%E6%89%BEmain_arena/</a></li>
+</ul>
 <p>最终算得 <code>main_arena</code>偏移为 <code>0x13A7F4</code></p>
 <ol>
 <li>通过malloc_trim函数定位</li>
