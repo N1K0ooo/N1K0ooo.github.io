@@ -308,13 +308,7 @@
 <ul>
 <li><p>在<code>sub_E14</code>处右键<code>Edit function</code>，设置<code>end address</code>为<code>0xeb8</code></p>
 </li>
-<li><p>在</p>
-<figure class="highlight plain"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs plain">loc_EB8<br></code></pre></div></td></tr></table></figure>
-
-<p>处右键</p>
-<figure class="highlight fortran"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs fortran">Create <span class="hljs-function"><span class="hljs-keyword">function</span></span><br></code></pre></div></td></tr></table></figure>
-
-<p>，然后F5即可：</p>
+<li><p>在 <code>loc_EB8</code>处右键 <code>Create function</code> ，然后F5即可：</p>
 <figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-function">__int64 <span class="hljs-title">sub_EB8</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>  __int64 v0; <span class="hljs-comment">// x29</span><br>                                                <span class="hljs-comment">// v0+0x48指向用户输入</span><br>  <span class="hljs-keyword">if</span> ( dword_14098<br>    || (input_char_1 = *(<span class="hljs-keyword">unsigned</span> __int8 *)(*(_QWORD *)(v0 + <span class="hljs-number">72</span>) + <span class="hljs-number">1L</span>L),<span class="hljs-comment">// 用户输入的第一个字符</span><br>        input_char_2 = *(<span class="hljs-keyword">unsigned</span> __int8 *)(*(_QWORD *)(v0 + <span class="hljs-number">72</span>) + <span class="hljs-number">2L</span>L),<span class="hljs-comment">// 输入的第二个字符</span><br>        input_char_1 &gt; <span class="hljs-number">16</span>)<br>    || input_char_2 &gt; <span class="hljs-number">16</span><br>    || input_char_1 &lt;= <span class="hljs-number">3</span><br>    || input_char_2 &lt;= <span class="hljs-number">3</span> )<br>  &#123;<br>    <span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;Abort&quot;</span>);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">255</span>);<br>  &#125;<br>  qword_14088 = (__int64)<span class="hljs-built_in">calloc</span>(input_char_1 * input_char_2, <span class="hljs-number">1u</span>LL);<br>  qword_14090 = (__int64)<span class="hljs-built_in">calloc</span>(input_char_1 * input_char_2, <span class="hljs-number">1u</span>LL);<br>  dword_14098 = <span class="hljs-number">1</span>;<br>  *(_QWORD *)(v0 + <span class="hljs-number">72</span>) += <span class="hljs-number">3L</span>L;                  <span class="hljs-comment">// 指向用户输入的第三个字符</span><br>  <span class="hljs-keyword">return</span> (*(__int64 (**)(<span class="hljs-keyword">void</span>))(v0 + <span class="hljs-number">88</span> + <span class="hljs-number">8L</span>L * jump_table[**(<span class="hljs-keyword">unsigned</span> __int8 **)(v0 + <span class="hljs-number">72</span>)]))();<span class="hljs-comment">// 跳转</span><br>&#125;<br></code></pre></div></td></tr></table></figure>
 
 </li>
@@ -417,10 +411,7 @@
 <li>在题目逻辑比较复杂，IDA对于一些函数或变量的分析有问题时，可以通过人工手段来进行调整，方便我们理解，包括但不限于 <code>创建函数</code>、<code>创建结构体</code>、<code>修改变量类型</code>等等</li>
 </ol>
 <ul>
-<li><p>在做异构题目时，需要频繁的用</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">gdb-multiarch</span><br></code></pre></div></td></tr></table></figure>
-
-<p>连接题目，如果觉得烦的话可以写一个小脚本</p>
+<li><p>在做异构题目时，需要频繁的用 <code>gdb-multiarch</code>连接题目，如果觉得烦的话可以写一个小脚本</p>
 <figure class="highlight sh"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs sh">// debug<br>file apollo<br><span class="hljs-built_in">set</span> architecture aarch64<br><span class="hljs-built_in">set</span> endian little<br>b *0x0000000000<br>target remote :123456<br></code></pre></div></td></tr></table></figure>
 
 <p>连接时只需输入 <code>gdb-multiarch -x debug</code> 即可</p>
