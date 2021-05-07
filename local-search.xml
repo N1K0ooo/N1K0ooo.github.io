@@ -67,16 +67,18 @@
       
       <category>PWN</category>
       
-      <category>Glibc</category>
+      <category>Race</category>
+      
+      <category>2021</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>Glibc</tag>
+      <tag>竞赛</tag>
       
-      <tag>Heap</tag>
+      <tag>虎符</tag>
       
       <tag>ARM64</tag>
       
